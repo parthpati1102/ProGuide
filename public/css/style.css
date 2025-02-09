@@ -1,0 +1,430 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .container{
+    flex: 1;
+  }
+  /* Navbar Styles */
+  .navbar {
+    background-color: #fff;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+ .nav-link{
+    color: #222222 !important;
+  }
+
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #1dbf73;
+    text-transform: uppercase;
+    margin-left: -40px !important;
+  }
+  
+  .navbar-brand:hover {
+    color: #17a865;
+  }
+  
+  .search-bar {
+    flex-grow: 1;
+    max-width: 500px;
+  }
+  
+  .form-control {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+  }
+  
+  .btn-search {
+    background-color: #1dbf73;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 0.5rem 1.2rem;
+    font-weight: bold;
+    margin-left: 10px; /* Adds space between search bar and button */
+    transition: background-color 0.3s;
+  }
+  
+  .btn-search:hover {
+    background-color: #17a865;
+  }
+  
+  .nav-link {
+    color: #555;
+    margin: 0 0.5rem;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .nav-link:hover {
+    color: #1dbf73;
+  }
+  
+  .btn-custom {
+    background-color: #1dbf73;
+    border-radius: 25px;
+    padding: 0.5rem 1.2rem;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+  }
+  
+  .btn-custom:hover {
+    background-color: #17a865;
+  }
+  
+  /* Mobile Menu Toggler */
+  .navbar-toggler {
+    border: none;
+  }
+  
+  .navbar-toggler-icon {
+    color: #555;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .search-bar {
+      order: 2;
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+    
+    .nav-item {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .footer {
+    background-color: #212529; /* Dark Background */
+    color: #fff; /* White Text */
+    font-size: 0.9rem; /* Slightly smaller font for footer */
+  }
+  
+  .footer h5 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .footer ul {
+    padding: 0;
+    list-style: none;
+  }
+  
+  .footer ul li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .footer ul li a {
+    color: #ddd;
+    transition: color 0.3s;
+  }
+  
+  .footer ul li a:hover {
+    color: #1dbf73;
+  }
+  
+  .footer .bi {
+    font-size: 1.5rem; /* Icon Size */
+    transition: color 0.3s;
+  }
+  
+  .footer .bi:hover {
+    color: #1dbf73;
+  }
+  
+  .border-top {
+    border-color: #444 !important; /* Subtle border */
+  }
+
+  .modal-title-register{
+    background: linear-gradient(90deg, #000, #444); /* Gradient background */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Inner spacing */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    text-transform: uppercase; /* Makes text uppercase */
+    font-weight: bold; /* Bold text */
+    letter-spacing: 2px; /* Adds spacing between letters */
+  }
+
+  .styled-button {
+    background: linear-gradient(90deg, #000, #444); /* Gradient background matching success color */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Inner spacing */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    font-weight: bold; /* Bold text */
+    letter-spacing: 1px; /* Slight spacing between letters */
+    text-transform: uppercase; /* Makes text uppercase */
+    border: none; /* Removes default border */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add hover effect */
+}
+
+.styled-button:hover {
+    transform: translateY(-2px); /* Slightly raises button on hover */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4); /* Deepens shadow on hover */
+    color: white; /* Ensure text stays white on hover */
+}
+
+.bold-icon {
+  font-size: 1.2rem; /* Increase font size */
+  stroke-width: 1.5px !important; /* Make icon appear bold */
+  color: #000;
+}
+
+.form-label{
+  font-weight: bold;
+}
+
+.navbar .nav-link img {
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  width: 35px; /* Display size */
+  height: 35px;
+}
+
+/* Mentor Profile Edite */
+
+.btn-primary {
+  background-color: #1dbf73;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.mentor-dashboard {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f3f5 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+.profile-picture {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border: 5px solid #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.mentor-username {
+  color: #2c3e50;
+  font-weight: 700;
+}
+.mentor-sub {
+  color: #34495e;
+  font-weight: 600;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+.badge-custom {
+  background-color: #3498db;
+  color: white;
+  font-size: 0.9em;
+  padding: 0.5em 1em;
+  margin: 0.2em;
+}
+.btn-custom {
+  background-color: #2ecc71;
+  border-color: #2ecc71;
+  color: white;
+  transition: all 0.3s ease;
+}
+.btn-custom:hover {
+  background-color: #27ae60;
+  border-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+.info-section {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+.info-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.bell-button{
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.bell-button:hover{
+  background-color: #27ae60;
+  border-color: #27ae60;
+}
+
+/* Home Page */
+:root {
+  --primary-color: #28a745;
+  --secondary-color: #6c757d;
+}
+
+.hero {
+  background-color: #f0f9f0; /* Light mint color */
+  position: relative;
+  overflow: hidden;
+}
+
+.hero h1 {
+  color: #3c4044; /* Using the green color for the heading */
+}
+
+.hero p {
+  color: #495057; /* Darker text for better readability */
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-outline-success {
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-outline-success:hover {
+  background-color: #28a745;
+  color: #fff;
+}
+
+
+.feature-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+}
+
+.step-circle {
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.btn-custom {
+  background-color: #1dbf73;
+  border-color: #1dbf73;
+}
+
+.btn-custom:hover {
+  background-color:#28a745;
+  border-color:  #28a745;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 60px 0;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero .lead {
+    font-size: 1.1rem;
+  }
+}
+
+/* .toast{
+  background-color:  #28a745 !important;
+} */
+
+.mentor-img{
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  width: 60px; /* Display size */
+  height: 60px;
+}
+
+/* Notification Bar Styling */
+.offcanvas {
+  max-width: 400px;
+  width: 100%;
+}
+.offcanvas-title {
+  font-weight: 600;
+  color: #2c3e50;
+}
+.session-request {
+  border-left: 4px solid #3498db;
+  transition: all 0.3s ease;
+}
+.session-request:hover {
+  background-color: #f8f9fa;
+  transform: translateX(5px);
+}
+.session-info {
+  font-size: 0.9rem;
+}
+.date-time {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+.btn-accept {
+  background-color: #2ecc71;
+  border-color: #2ecc71;
+}
+.btn-decline {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.btn-accept:hover {
+  background-color: #27ae60;
+  border-color: #27ae60;
+}
+.btn-decline:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+.no-requests {
+  color: #95a5a6;
+  font-style: italic;
+}

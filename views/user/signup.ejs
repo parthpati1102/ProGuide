@@ -1,0 +1,98 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+<div class="row">
+<div class="col-8 offset-2">
+<form method="post" action="/register" novalidate class="needs-validation"  enctype="multipart/form-data">
+  <div class="row g-3">
+    <div class="col-md-12 mt-5">
+      <label for="fullName" class="form-label">Full Name</label>
+      <input name="user[name]" type="text" class="form-control" placeholder="Please enter your full name"  id="fullName" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+
+    <div class="col-md-12 mb-3">
+      <label for="username4" class="form-label">Username</label>
+      <input name="user[username]" type="text" class="form-control" placeholder="Please enter your full name"  id="username4" required>
+      <div class="invalid-feedback">
+         please enter valid username.
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-5">
+        <label for="inputEmail4" class="form-label">Email</label>
+        <input name="user[email]" type="email" class="form-control"  placeholder="please enter your email" id="inputEmail4" required>
+        <div class="invalid-feedback">
+          please enter valid email.
+        </div>
+      </div>
+  
+      <div class="col-md-7 position-relative">
+        <label for="inputPass4" class="form-label">Password</label>
+        <div class="input-group">
+            <input name="password" type="password" class="form-control" placeholder="Please enter your password" id="inputPass4" required>
+            <span class="input-group-text bg-white" id="togglePass" style="cursor: pointer;">
+                <i class="bi bi-eye-slash bold-icon"></i>
+            </span>
+            <div class="valid-feedback">
+              password looks good!
+            </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-12">
+      <label for="uploadImage" class="form-label">Upload Your Image</label>
+      <input name="user[profilePicture]" type="file" class="form-control" id="uploadImage" required>
+    </div>
+
+    <div class="col-md-12">
+      <label for="inputState" class="form-label">Role</label>
+      <select name="user[role]" id="inputState" class="form-select" required>
+        <option selected>Choose...</option>
+        <option>Freelancer</option>
+        <option>Employer</option>
+        <option>Mentor</option>
+        <option>Mentee</option>
+      </select>
+      <div class="invalid-feedback">
+        please select role.
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+        <label class="form-check-label" for="invalidCheck">
+          Agree to terms and conditions
+        </label>
+        <div class="invalid-feedback">
+          You must agree before submitting.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button type="submit" class="btn styled-button btn-sm mt-2 mb-4">Register</button>
+    </div>
+    
+  </div>
+</form>
+</div>
+</div>
+<script>
+  document.getElementById('togglePass').addEventListener('click', function () {
+    const passwordField = document.getElementById('inputPass4');
+    const icon = this.querySelector('i');
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text'; // Show password
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    } else {
+        passwordField.type = 'password'; // Hide password
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    }
+});
+</script>

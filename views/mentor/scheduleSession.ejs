@@ -1,0 +1,32 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="max-width: 450px; width: 100%;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Schedule Session</h2>
+            <h5 class="text-center text-primary mb-3">with <%= mentor.userId.name %></h5>
+
+            <form method="POST" action="/scheduleSession/<%= mentor.id %>" novalidate class="needs-validation">
+                <div class="mb-3">
+                    <label for="date" class="form-label fw-bold">Select Date</label>
+                    <input type="date" class="form-control" name="date" required>
+                    <div class="invalid-feedback">
+                        This field is required!
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="time" class="form-label fw-bold">Select Time</label>
+                    <div class="d-flex">
+                        <input type="time" class="form-control me-2" name="time" required>
+                        <select class="form-select w-25" name="ampm" required>
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Request Session</button>
+            </form>
+        </div>
+    </div>
+</div>

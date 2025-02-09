@@ -1,0 +1,69 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+
+    <div class="row">
+        <div class="col-8 offset-2">
+            <!-- <h2 class="text-center  modal-title-register mb-4">Mentee Registration Form</h2> -->
+            <form method="post" action="/createProfile/<%= mentor._id%>?_method=PUT" novalidate class="needs-validation"  id="menteeForm" class="form-container mx-auto" >
+
+                <!-- Bio -->
+                <div class="row g-3">
+                    <div class="col-md-12 mt-5">
+                        <label for="bio" class="form-label">Short Bio</label>
+                        <textarea class="form-control" id="bio" name="mentor[bio]" rows="3" maxlength="500"
+                            placeholder="Write a short bio about yourself..." required><%= mentor.bio %></textarea>
+                        <small class="form-text text-muted">Maximum 500 characters.</small>
+                        <div class="invalid-feedback">This field is required!</div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="col-md-12">
+                        <label for="skills" class="form-label">Skills</label>
+                        <input type="text" class="form-control" id="skills" name="mentor[skills]"
+                           value="<%= mentor.skills %>" placeholder="Enter your skills (comma-separated)" required />
+                        <small class="form-text text-muted">E.g., JavaScript, Python, Machine Learning</small>
+                        <div class="invalid-feedback">This field is required!</div>
+                    </div>
+
+                    <!-- Goals -->
+                    <div class="col-md-12">
+                        <label for="goals" class="form-label">Goals</label>
+                        <textarea class="form-control" id="goals" name="mentor[goals]" rows="2"
+                            placeholder="Describe your goals or aspirations" required><%= mentor.goals%></textarea>
+                        <div class="invalid-feedback">This field is required!</div>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="col-md-12">
+                        <label for="availability" class="form-label">Availability</label>
+                        <select class="form-select" id="availability" name="mentor[availability]" required>
+                          <option value="Available" <%= mentor.availability === "Available" ? "selected" : "" %>>Available</option>
+                          <option value="Busy" <%= mentor.availability === "Busy" ? "selected" : "" %>>Busy</option>
+                        </select>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="col-md-12">
+                        <label for="education" class="form-label">Education</label>
+                        <input type="text" class="form-control" id="education" name="mentor[education]"
+                           value="<%= mentor.education %>" placeholder="Enter your educational background" required />
+                        <div class="invalid-feedback">This field is required!</div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="col-md-12">
+                        <label for="experience" class="form-label">Experience</label>
+                        <textarea class="form-control" id="experience" name="mentor[experience]" rows="3"
+                            placeholder="Describe your prior experience or achievements" required><%= mentor.experience %></textarea>
+                        <div class="invalid-feedback">This field is required!</div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div>
+                        <button type="submit" class="btn styled-button btn-sm mt-2 mb-4">
+                           Edit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

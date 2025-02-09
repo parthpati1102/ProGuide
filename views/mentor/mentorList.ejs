@@ -1,0 +1,43 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+<div class="container py-5">
+    <!-- <h2 class="text-center mb-4">Mentor Search Results</h2> -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% if (mentors.length > 0) { %>
+            <% mentors.forEach(mentor => { %>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="<%= mentor.userId.profilePicture.url %>" alt="<%= mentor.userId.name %>" class=" mentor-img rounded-circle me-3">
+                                <div>
+                                    <h5 class="card-title mb-0"><%= mentor.userId.name %></h5>
+                                    <p class="text-muted mb-0"><small><%= mentor.skills.join(", ") %></small></p>
+                                </div>
+                            </div>
+                            <p class="card-text flex-grow-1"><%= mentor.bio || "No bio available" %></p>
+                            <div class="mt-3">
+                                <p class="mb-0"><i class="bi bi-calendar-check me-2"></i>Availability: <%= mentor.availability %></p>
+                                <% if (currUser.role === "Mentee") { %>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <% if (mentor.availability === "Available") { %>
+                                        <form action="/scheduleSession/<%= mentor.id %>" method="GET" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-success mt-3">Connect</button>
+                                        </form>
+                                        <% } %>
+                                        <a href="/showProfile/<%= mentor._id %>" class="btn btn-outline-success mt-3">View Profile</a>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>No mentors found matching your search criteria.
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>

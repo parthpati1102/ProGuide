@@ -1,0 +1,114 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+
+<div class="container my-5">
+    <div class="mentor-dashboard p-4 p-md-5">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-auto text-center text-md-start mb-3 mb-md-0">
+                <img src="<%= mentor.userId.profilePicture.url %>" alt="Mentor Profile Picture" class="profile-picture rounded-circle">
+            </div>
+            <div class="col-md">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h1 class="mentor-username mb-0"><%= mentor.userId.name %></h1>
+                        <p class="text-muted mb-2"><%= mentor.userId.email %></p>
+                    </div>
+                    <% if (currUser.role === "Mentor") { %>
+                        <button class="btn bell-button btn-outline-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#sessionRequests">
+                            <i class="fas fa-bell"></i>
+                            <% if (sessionRequests.length > 0) { %>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    <%= sessionRequests.length %>
+                                </span>
+
+                            <% } %>
+                        </button>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="info-section p-4">
+                    <h4 class="mentor-sub">Profile Information</h4>
+                    <p><strong>Availability:</strong> <%= mentor.availability %></p>
+                    <p><strong>Bio:</strong> <%= mentor.bio %></p>
+                    <p><strong>Goals:</strong> <%= mentor.goals %></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-section p-4">
+                    <h4 class="mentor-sub">Additional Details</h4>
+                    <p><strong>Education:</strong> <%= mentor.education %></p>
+                    <p><strong>Experience:</strong> <%= mentor.experience %></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section p-4 mt-4">
+            <h4 class="mentor-sub">Skills</h4>
+            <div>
+                <% mentor.skills.forEach(function(skill) { %>
+                    <span class="badge badge-custom"><%= skill %></span>
+                <% }); %>
+            </div>
+        </div>
+
+        <% if (currUser.role === "Mentor") { %>
+            <div class="text-center mt-5">
+                <a href="/createProfile/<%= mentor.id %>/editProfile" class="btn btn-custom btn-md me-3">Edit Profile</a>
+                <form method="post" action="/deleteProfile?_method=DELETE" class="d-inline">
+                    <button class="btn btn-outline-danger btn-md">Delete Profile</button>
+                </form>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+
+<!-- Bootstrap Offcanvas for Session Requests -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="sessionRequests">
+  <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title">
+          <i class="bi bi-calendar-check me-2"></i>Session Requests
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+      <% if (sessionRequests.length > 0) { %>
+          <div class="list-group">
+              <% sessionRequests.forEach(request => { %>
+                  <div class="list-group-item session-request p-3 mb-2">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                          <h6 class="mb-0"><%= request.menteeId.name %></h6>
+                          <!-- <span class="badge bg-primary rounded-pill"><%= request.sessionType %></span> -->
+                      </div>
+                      <p class="session-info mb-2">
+                          <i class="bi bi-envelope me-2"></i><%= request.menteeId.email %>
+                      </p>
+                      <p class="date-time mb-3">
+                          <i class="bi bi-clock me-2"></i><%= request.formattedDate %> at <%= request.time %>
+                      </p>
+                      <div class="d-flex justify-content-end">
+                          <form method="POST" action="/acceptSession/<%= request._id %>" class="me-2">
+                              <button class="btn btn-sm btn-accept text-white">
+                                  <i class="bi bi-check2 me-1"></i>Accept
+                              </button>
+                          </form>
+                          <form method="POST" action="/declineSession/<%= request._id %>">
+                              <button class="btn btn-sm btn-decline text-white">
+                                  <i class="bi bi-x me-1"></i>Decline
+                              </button>
+                          </form>
+                      </div>
+                  </div>
+              <% }); %>
+          </div>
+      <% } else { %>
+          <div class="text-center mt-5">
+              <i class="bi bi-calendar-x fs-1 text-muted"></i>
+              <p class="no-requests mt-3">No new session requests at the moment.</p>
+          </div>
+      <% } %>
+  </div>
+</div>

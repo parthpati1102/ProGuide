@@ -1,0 +1,120 @@
+<nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand" href="/"><i class="fa-solid fa-handshake"></i> ProGuide</a>
+
+      <!-- Hamburger -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar Content -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <!-- Search Bar -->
+        <form  method="GET" action="/mentors" class="d-flex mx-auto search-bar">
+          <input class="form-control me-2"   name="skill" type="search" placeholder="What service are you looking for today?" aria-label="Search">
+          <button class="btn btn-search" type="submit">Search</button>
+        </form>
+
+        <!-- Right-side Links -->
+        <ul class="navbar-nav ms-auto align-items-center">
+        <% if (!currUser) { %> <!-- If user is not logged in -->
+          <li class="nav-item">
+            <a class="nav-link" href="#">Explore</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Messages</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="btn btn-custom text-white" href="#">Join Now</a>
+          </li> -->
+        <% } if(currUser) { %> <!-- If user is logged in -->
+          <li class="nav-item">
+            <a class="nav-link" href="#">Explore</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Messages</a>
+          </li>
+          <li class="nav-item">
+            <% if (showCreateProfile && currUser.role === "Mentor") { %>
+              <a class="btn btn-custom text-white" href="/createProfile">Create Profile</a>
+            <% } else if(currUser.role === "Mentor"){ %>
+              <a class="btn btn-custom text-white" href="/createProfile/<%= mentorProfile.id %>/editProfile">Update Profile</a>
+            <% } %>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="<%= currUser && currUser.profilePicture.url ? currUser.profilePicture.url : '/default-avatar.png' %>" 
+                   alt="Profile" 
+                   class="rounded-circle" 
+                   width="30" 
+                   height="30">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <% if(currUser.role === "Mentor") { %>
+              <li><a class="dropdown-item" href="/showProfile">Dashboard</a></li>
+              <% } %>
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            </ul>
+          </li>
+        <% } %>
+      </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+       <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center position-relative bg-black">
+          <h1 class="modal-title-register fs-2 text-white  px-3 py-2 rounded" id="staticBackdropLabel">Please Login</h1>
+          <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="/login" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-12">
+                <label for="inputusername4" class="form-label">Username</label>
+                <input name="username" type="text" class="form-control"  placeholder="please enter your username" id="inputusername4" required>
+              </div>
+
+              <div class="col-md-12 position-relative">
+                <label  for="inputPassword4" class="form-label">Password</label>
+                <div class="input-group">
+                    <input name="password" type="password" class="form-control" placeholder="Please enter your password" id="inputPassword4" required>
+                    <span class="input-group-text bg-white" id="togglePassword" style="cursor: pointer;">
+                        <i class="bi bi-eye-slash bold-icon"></i>
+                    </span>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                  <label class="form-check-label" for="invalidCheck">
+                    Agree to terms and conditions
+                  </label>
+                  <div class="invalid-feedback">
+                    You must agree before submitting.
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 col-12 mx-auto">
+                <button type="submit" class="btn styled-button">Login</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -86,7 +86,7 @@ async function main() {
 }
 
 app.get('/' , (req , res) => {
-    res.send("Jay Shree Ram");
+    res.render("Jay Shree Ram");
 })
 
 const validateUser = (req, res , next) => {
@@ -256,8 +256,12 @@ app.get("/search", async (req, res) => {
 
 
 //Starting with the freeLancing Routes
-app.get("/jobs/new", wrapAsync( (req, res) => {
-  res.render("employer/createJob.ejs");  // Renders the job creation form
+app.get("/jobs/new", wrapAsync(async (req, res, next) => {
+    try {
+        res.render("employer/createJob.ejs");
+    } catch (err) {
+        next(err);  // Pass the error to Express error handler
+    }
 }));
 
 //Employer can create the job

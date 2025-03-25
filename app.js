@@ -85,9 +85,6 @@ async function main() {
     await mongoose.connect(MONGO_URL);
 }
 
-app.get('/' , (req , res) => {
-    res.render("Jay Shree Ram");
-})
 
 const validateUser = (req, res , next) => {
     let {error} =  userSchema.validate(req.body);
@@ -137,7 +134,7 @@ app.use((req , res , next) => {
     // console.log('Current user:', req.user); 
     res.locals.success  = req.flash("success");
     res.locals.error  = req.flash("error");
-    res.locals.currUser = req.user;
+    res.locals.currUser = req.user || null;
     res.locals.page = req.path === '/index' ? 'index' : req.path.substring(1); 
 
     next();
@@ -170,6 +167,10 @@ app.use(async (req, res, next) => {
   }
   next();
 });
+
+app.get('/' , (req , res) => {
+    res.render("user/index.ejs");
+})
 
 app.get("/index" , (req , res) => {
     res.render("user/index.ejs");

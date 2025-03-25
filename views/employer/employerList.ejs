@@ -1,0 +1,43 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+<div class="container py-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% if (jobs.length > 0) { %>
+            <% jobs.forEach(job => { %>
+                <% if (job.status === "Open") { %> <!-- Only display Open jobs -->
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="<%= job.employerId.profilePicture.url %>" alt="<%= job.employerId.name %>" class="mentor-img rounded-circle me-3">
+                                    <div>
+                                        <h5 class="card-title mb-0"><%= job.employerId.name %></h5>
+                                        <p class="text-muted mb-0"><small><%= job.requiredSkills.join(", ") %></small></p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title"><%= job.title %></h5>
+                                <p class="text-muted mb-1"><small><strong>Budget:</strong> &#8377;<%= job.budget %></small></p>
+                                <p class="mb-1"><strong>Skills Required:</strong> <%= job.requiredSkills.join(", ") %></p>
+                                <p class="mb-1"><i class="bi bi-calendar"></i> Deadline: <%= job.deadline.toDateString() %></p>
+                                <p class="card-text flex-grow-1"><%= job.description || "No description available" %></p>
+
+                                <% if (currUser.role === "Freelancer") { %>
+                                    <div class="d-flex align-items-center gap-2 mt-3">
+                                        <form action="/jobs/<%= job._id %>/apply" method="GET">
+                                            <button type="submit" class="btn btn-outline-success mt-3">Apply</button>
+                                        </form>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %> <!-- End job.status === "Open" check -->
+            <% }) %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle me-2"></i> No job listings found matching your search criteria.
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>

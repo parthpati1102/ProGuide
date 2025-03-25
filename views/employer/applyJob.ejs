@@ -1,0 +1,85 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+<body>
+<div class="main-content">
+    <div class="form-container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="bi bi-briefcase-fill me-2"></i>Job Application</h3>
+                <p class="mb-0">Complete the form below to apply for this position</p>
+            </div>
+            <div class="card-body p-4">
+                <form action="/jobs/<%= job._id %>/apply" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="proposal" class="form-label">
+                            <i class="bi bi-chat-left-text me-2"></i>Your Proposal
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="proposal" 
+                            name="proposal" 
+                            placeholder="Describe why you're the perfect candidate for this job..." 
+                            required
+                        ></textarea>
+                        <div class="form-text">Be specific about your skills and experience relevant to this position.</div>
+                        <div class="invalid-feedback">
+                            Please provide your proposal.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="expectedBudget" class="form-label">
+                            <i class="bi bi-currency-rupee me-2"></i>Expected Budget (₹)
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-currency-rupee"></i></span>
+                            <input 
+                                type="number" 
+                                class="form-control budget" 
+                                id="expectedBudget" 
+                                name="expectedBudget" 
+                                placeholder="Enter your expected compensation" 
+                                required
+                            >
+                            <div class="invalid-feedback">
+                                Please provide your expected budget.
+                            </div>
+                        </div>
+                        <div class="form-text">Enter a reasonable amount based on your experience and the job requirements.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="availability" class="form-label">
+                            <i class="bi bi-calendar-check me-2"></i>Availability
+                        </label>
+                        <select class="form-select" id="availability" name="availability" required>
+                            <option value="" selected disabled>Select your availability</option>
+                            <option value="Immediate">Immediate</option>
+                            <option value="Within a Week">Within a Week</option>
+                            <option value="Flexible">Flexible</option>
+                        </select>
+                    </div>
+                    
+                    
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                I agree to the terms and conditions
+                            </label>
+                            <div class="invalid-feedback">
+                                You must agree before submitting.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send-fill me-2"></i>Apply Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

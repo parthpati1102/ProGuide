@@ -13,6 +13,8 @@ const  sendEmail = require("./sendEmail.js");
 const SessionScheduling = require("./models/session");
 const User = require("./models/user");
 const Mentor = require("./models/mentor");
+const Job = require("./models/jobPost");
+const Application = require("./models/acceptApplication");
 
 const { isLoggedIn } = require("./middlewares.js");
 
@@ -26,7 +28,7 @@ const multer  = require('multer')
 const {storage} = require("./cloudConfig.js");
 const upload = multer({storage });
 
-const {userSchema , mentorSchema} = require("./schema.js");
+const {userSchema , mentorSchema , jobSchema} = require("./schema.js");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 
@@ -81,7 +83,6 @@ main()
 })
 async function main() {
     await mongoose.connect(MONGO_URL);
-
 }
 
 app.get('/' , (req , res) => {
@@ -104,6 +105,16 @@ const validateMentor = (req, res , next) => {
     }
 
     let {error} =  mentorSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400 , errMsg);
+    }else{
+        next();
+    }
+}
+
+const validateJob = (req, res , next) => {
+    let {error} =  jobSchema.validate(req.body);
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400 , errMsg);
@@ -144,10 +155,26 @@ app.use(async (req, res, next) => {
     next();
 });
 
+app.use(async (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === "Employer") {
+      try {
+          const jobApplications = await Application.find({ employerId: req.user._id , status: "Pending" })
+              .populate("freelancerId jobId");
+          res.locals.jobApplications = jobApplications; // Store globally
+      } catch (err) {
+          console.error("Error fetching job applications:", err);
+          res.locals.jobApplications = [];
+      }
+  } else {
+      res.locals.jobApplications = [];
+  }
+  next();
+});
 
 app.get("/index" , (req , res) => {
     res.render("user/index.ejs");
 })
+
 
 // User Login And Register Process
 app.get("/register" , (req , res) => {
@@ -191,6 +218,245 @@ app.get('/logout', (req, res, next) => {
       res.redirect('/index');
     });
 });
+
+//If User is not LoggedIn they can explore all available mentors and jobs
+app.get("/search", async (req, res) => {
+    try {
+        const { query } = req.query;
+        let jobFilter = { status: "Open" }; // Show only open jobs
+        let mentorFilter = {}; // No status filter for mentors
+
+        // Search logic (case-insensitive)
+        if (query) {
+            jobFilter.$or = [
+                { title: { $regex: query, $options: "i" } },
+                { requiredSkills: { $regex: query, $options: "i" } }
+            ];
+            mentorFilter.$or = [
+                { name: { $regex: query, $options: "i" } },
+                { expertise: { $regex: query, $options: "i" } },
+                { skills: { $regex: query, $options: "i" } } // Search by skills
+            ];
+        }
+
+        // Fetch jobs and mentors
+        const jobs = await Job.find(jobFilter).populate("employerId");
+        const mentors = await Mentor.find(mentorFilter).populate("userId");
+
+        // Check if user is logged in
+        const isLoggedIn = req.isAuthenticated();
+
+        res.render("user/searchResults.ejs", { jobs, mentors, isLoggedIn });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error retrieving search results.");
+    }
+});
+
+
+
+//Starting with the freeLancing Routes
+app.get("/jobs/new", wrapAsync( (req, res) => {
+  res.render("employer/createJob.ejs");  // Renders the job creation form
+}));
+
+//Employer can create the job
+app.post("/jobs", wrapAsync(async (req, res) => {
+  try {
+      //console.log(req.body);  Debugging: Check form data
+
+      let data = req.body.job;
+
+      let jobData = new Job(data);
+      jobData.employerId = req.user._id;
+
+      await jobData.save();
+
+      req.flash("success", "Job created successfully!");
+      res.redirect("/index");
+  } catch (err) {
+      console.error("Job creation error:", err);
+      req.flash("error", "Failed to create job. Please try again.");
+      res.redirect("/jobs/new");  // Redirect to job creation form
+  }
+}));
+
+//Employer can see the list of jobs
+app.get("/myJobs", isLoggedIn, wrapAsync(async (req, res) => {
+    const employerId = req.user._id;
+
+    // Fetch all job posts created by the employers
+    const jobs = await Job.find({ employerId });
+
+    res.render("employer/myJobs.ejs", { jobs });
+}));
+
+//Employer can Close the job
+app.post("/closeJob/:jobId", isLoggedIn, wrapAsync(async (req, res) => {
+    const job = await Job.findByIdAndUpdate(
+        req.params.jobId,
+        { status: "Closed" },
+        { new: true }
+    );
+
+    if (!job) {
+        req.flash("error", "Job not found.");
+        return res.redirect("/myJobs");
+    }
+
+    req.flash("success", "Job status updated to 'Closed'.");
+    res.redirect("/myJobs");
+}));
+
+//Freelancer can Search for the Jobs
+app.get("/joblist", isLoggedIn, wrapAsync(async (req, res) => {
+    try {
+        const { skill } = req.query;
+        let query = {};
+
+        // Search by required skills (case-insensitive)
+        if (skill) {
+            query.requiredSkills = { $regex: skill, $options: "i" };
+        }
+
+        // If the user is a freelancer, show only open jobs
+        if (req.user.role === "Freelancer") {
+            query.status = "Open";
+        }
+
+        const jobs = await Job.find(query).populate("employerId");
+        res.render("employer/employerList.ejs", { jobs });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error retrieving jobs.");
+    }
+}));
+
+//FreeLancer can apply for the job
+app.get("/jobs/:id/apply", isLoggedIn, wrapAsync(async (req, res) => {
+  const job = await Job.findById(req.params.id).populate("employerId");
+  if (!job) {
+      req.flash("error", "Job not found.");
+      return res.redirect("/jobs");
+  }
+  res.render("employer/applyJob.ejs", { job });
+}));
+
+
+//Freelancer can apply for the job
+app.post("/jobs/:id/apply", isLoggedIn, async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { proposal, expectedBudget, availability } = req.body; // Added availability
+      const freelancerId = req.user._id;
+
+      // Check if the job exists
+      const job = await Job.findById(id).populate("employerId");
+      if (!job) {
+          req.flash("error", "Job not found!");
+          return res.redirect("/jobs");
+      }
+
+      // Check if the freelancer has already applied
+      const existingApplication = await Application.findOne({ jobId: id, freelancerId });
+      if (existingApplication) {
+          req.flash("error", "You have already applied for this job!");
+          return res.redirect(`/index`);
+      }
+
+      // Create a new application with availability
+      const application = new Application({
+          jobId: id,
+          freelancerId,
+          employerId: job.employerId,  // Store the employer reference
+          proposal,
+          expectedBudget,
+          availability // Include availability
+      });
+
+      await application.save();
+
+      req.flash("success", "Your application has been submitted!");
+      res.redirect(`/index`);
+  } catch (err) {
+      console.error("Error applying for job:", err);
+      req.flash("error", "Something went wrong. Please try again.");
+      res.redirect(`/index`);
+  }
+});
+
+
+//Route that can accept the application
+app.post("/acceptApplication/:applicationId", isLoggedIn, wrapAsync(async (req, res) => {
+  try {
+      const application = await Application.findByIdAndUpdate(
+          req.params.applicationId,
+          { status: "Accepted" }, // Update the status
+          { new: true }
+      ).populate("jobId freelancerId");
+
+      if (!application) {
+          req.flash("error", "Application not found.");
+          return res.redirect("/jobApplications");
+      }
+
+      // Send email to the freelancer
+      const freelancerEmail = application.freelancerId.email;
+      const subject = "Job Application Accepted";
+      const message = `
+         <p>Hello ${application.freelancerId.name},</p>
+         <p>Congratulations! Your job application for <strong>${application.jobId.title}</strong> has been accepted by the employer.</p>
+          <p>You will receive further details regarding the next steps soon. Please keep an eye on your email for additional instructions.</p>
+         <p>Looking forward to your successful collaboration!</p>
+    `;
+
+      await sendEmail(freelancerEmail, subject, message);
+
+      req.flash("success", "Application accepted. Freelancer notified via email.");
+      res.redirect("/index");
+  } catch (err) {
+      console.error(err);
+      req.flash("error", "Error accepting application.");
+      res.redirect("/index");
+  }
+}));
+
+//Route that can reject the application
+app.post("/rejectApplication/:applicationId", isLoggedIn, wrapAsync(async (req, res) => {
+    try {
+        const application = await Application.findByIdAndUpdate(
+            req.params.applicationId,
+            { status: "Rejected" }, // Update the status
+            { new: true }
+        ).populate("jobId freelancerId");
+
+        if (!application) {
+            req.flash("error", "Application not found.");
+            return res.redirect("/jobApplications");
+        }
+
+        // Send email to the freelancer
+        const freelancerEmail = application.freelancerId.email;
+        const subject = "Job Application Rejected";
+        const message = `
+         <p>Hello ${application.freelancerId.name},</p>
+         <p>We appreciate your interest in the <strong>${application.jobId.title}</strong> position.</p>
+         <p>Unfortunately, the employer has decided to proceed with another candidate at this time.</p>
+         <p>We encourage you to explore other job opportunities on our platform and apply for roles that match your skills and expertise.</p>
+         <p>Wishing you the best in your job search!</p>
+`;
+
+        await sendEmail(freelancerEmail, subject, message);
+
+        req.flash("success", "Application rejected. Freelancer notified via email.");
+        res.redirect("/index");
+    } catch (err) {
+        console.error(err);
+        req.flash("error", "Error rejecting application.");
+        res.redirect("/index");
+    }
+}));
+
 
 //User Profile Process Started So Mentor Can easily perform CRUD operations
 app.get("/createProfile" ,isLoggedIn, (req , res) => {

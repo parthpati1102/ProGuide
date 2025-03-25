@@ -1,0 +1,77 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-8 offset-2">
+                <form method="POST" action="/jobs" novalidate class="needs-validation" id="jobForm" class="form-container mx-auto">
+                    <!-- Job Title -->
+                    <div class="row g-3">
+                        <div class="col-md-12 mt-5">
+                            <label for="title" class="form-label">Job Title</label>
+                            <input type="text" class="form-control" id="title" name="job[title]" 
+                                placeholder="Enter job title" required>
+                            <div class="invalid-feedback">This field is required!</div>
+                        </div>
+
+                        <!-- Job Description -->
+                        <div class="col-md-12">
+                            <label for="description" class="form-label">Job Description</label>
+                            <textarea class="form-control" id="description" name="job[description]" rows="3" maxlength="1000"
+                                placeholder="Describe the job requirements, responsibilities, and expectations..." required></textarea>
+                            <small class="form-text text-muted">Maximum 1000 characters.</small>
+                            <div class="invalid-feedback">This field is required!</div>
+                        </div>
+
+                        <!-- Budget -->
+                        <div class="col-md-12">
+                            <label for="budget" class="form-label">Budget</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="budget" name="job[budget]" 
+                                    placeholder="Enter amount" min="1" required>
+                            </div>
+                            <small class="form-text text-muted">Enter the maximum budget for this job</small>
+                            <div class="invalid-feedback">This field is required!</div>
+                        </div>
+
+                        <!-- Deadline -->
+                        <div class="col-md-12">
+                            <label for="deadline" class="form-label">Deadline</label>
+                            <input type="date" class="form-control" id="deadline" name="job[deadline]" required>
+                            <small class="form-text text-muted">When does this job need to be completed?</small>
+                            <div class="invalid-feedback">This field is required!</div>
+                        </div>
+
+                        <!-- Required Skills -->
+                        <div class="col-md-12">
+                            <label for="requiredSkills" class="form-label">Required Skills</label>
+                            <input type="text" class="form-control" id="requiredSkills" name="job[requiredSkills]"
+                                placeholder="Enter required skills (comma-separated)" required />
+                            <small class="form-text text-muted">E.g., JavaScript, React, Node.js</small>
+                            <div class="invalid-feedback">This field is required!</div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-12">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="job[status]" required>
+                                <option value="Open" selected>Open</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+
+                        <!-- Hidden fields that would typically be handled by the backend -->
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit" class="btn styled-button btn-sm mt-2 mb-4">
+                                Create
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

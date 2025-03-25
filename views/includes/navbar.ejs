@@ -11,41 +11,60 @@
       <!-- Navbar Content -->
       <div class="collapse navbar-collapse" id="navbarContent">
         <!-- Search Bar -->
-        <form  method="GET" action="/mentors" class="d-flex mx-auto search-bar">
-          <input class="form-control me-2"   name="skill" type="search" placeholder="What service are you looking for today?" aria-label="Search">
-          <button class="btn btn-search" type="submit">Search</button>
-        </form>
+        <% if (currUser && (currUser.role === "Mentee" || currUser.role === "Mentor")) { %>
+          <!-- Mentor Search Form -->
+          <form method="GET" action="/mentors" class="d-flex mx-auto search-bar">
+              <input class="form-control me-2" name="skill" type="search" placeholder="What service are you looking for today?" aria-label="Search">
+              <button class="btn btn-search" type="submit">Search</button>
+          </form>
+      <% } else if (currUser && (currUser.role === "Freelancer" || currUser.role === "Employer")) { %>
+          <!-- Freelancer Search Form -->
+          <form method="GET" action="/joblist" class="d-flex mx-auto search-bar">
+              <input class="form-control me-2" name="skill" type="search" placeholder="Search for jobs..." aria-label="Search">
+              <button class="btn btn-search" type="submit">Search</button>
+          </form>
+      <% } else { %>
+          <!-- Default Search Form for Unauthenticated Users -->
+          <form method="GET" action="/search" class="d-flex mx-auto search-bar">
+              <input class="form-control me-2" name="query" type="search" placeholder="Search anything..." aria-label="Search">
+              <button class="btn btn-search" type="submit">Search</button>
+          </form>
+      <% } %>
 
         <!-- Right-side Links -->
         <ul class="navbar-nav ms-auto align-items-center">
         <% if (!currUser) { %> <!-- If user is not logged in -->
-          <li class="nav-item">
-            <a class="nav-link" href="#">Explore</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Messages</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</a>
-          </li>
+          <ul class="navbar-nav nav-buttons">
+            <li class="nav-item">
+              <a class="btn btn-custom btn-register me-3" href="/register">
+                <i class="bi bi-person-plus-fill"></i>
+                <span>Register</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-custom btn-login" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span>Login</span>
+              </a>
+            </li>
+          </ul>
           <!-- <li class="nav-item">
             <a class="btn btn-custom text-white" href="#">Join Now</a>
           </li> -->
         <% } if(currUser) { %> <!-- If user is logged in -->
-          <li class="nav-item">
-            <a class="nav-link" href="#">Explore</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Messages</a>
-          </li>
+        <% if (currUser && currUser.role === "Employer") { %>
+          <button class="btn btn-custom text-white me-3" data-bs-toggle="offcanvas" data-bs-target="#jobApplications">
+              <i class="bi bi-briefcase"></i> View Job Applications
+          </button>
+       <% } %>
+
           <li class="nav-item">
             <% if (showCreateProfile && currUser.role === "Mentor") { %>
               <a class="btn btn-custom text-white" href="/createProfile">Create Profile</a>
             <% } else if(currUser.role === "Mentor"){ %>
               <a class="btn btn-custom text-white" href="/createProfile/<%= mentorProfile.id %>/editProfile">Update Profile</a>
+            <% } else if(currUser.role === "Employer"){ %>
+              <a class="btn btn-custom text-white" href="/jobs/new">Post a Job</a>
             <% } %>
           </li>
           <li class="nav-item dropdown">
@@ -60,6 +79,9 @@
               <% if(currUser.role === "Mentor") { %>
               <li><a class="dropdown-item" href="/showProfile">Dashboard</a></li>
               <% } %>
+              <% if(currUser.role === "Employer") { %>
+                <li><a class="dropdown-item" href="/myJobs">My Job Posts</a></li>
+              <% } %>
               <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
           </li>
@@ -69,6 +91,58 @@
     </div>
   </nav>
 
+  <!-- Bootstrap Offcanvas for Job Applications -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="jobApplications">
+  <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title">
+          <i class="bi bi-briefcase me-2"></i>Job Applications
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+      <% if (jobApplications.length > 0) { %>
+          <div class="list-group">
+              <% jobApplications.forEach(application => { %>
+                  <div class="list-group-item application-item p-3 mb-2">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                          <h6 class="mb-0"><%= application.freelancerId.name %></h6>
+                          <span class="badge bg-primary rounded-pill"><%= application.jobId.title %></span>
+                      </div>
+                      <p class="application-info mb-2">
+                          <i class="bi bi-envelope me-2"></i><%= application.freelancerId.email %>
+                      </p>
+                      <p class="budget mb-2">
+                          <i class="bi bi-currency-rupee me-2"></i>Expected Budget: &#8377;<%= application.expectedBudget %>
+                      </p>
+                      <p class="proposal mb-3"><strong>Proposal:</strong> <%= application.proposal %></p>
+                      <p class="availability mb-3">
+                          <i class="bi bi-clock me-2"></i>Availability: <%= application.availability %>
+                      </p>
+                      <div class="d-flex justify-content-end">
+                          <form method="POST" action="/acceptApplication/<%= application._id %>" class="me-2">
+                              <button class="btn btn-sm btn-accept text-white">
+                                  <i class="bi bi-check2 me-1"></i>Accept
+                              </button>
+                          </form>
+                          <form method="POST" action="/rejectApplication/<%= application._id %>">
+                              <button class="btn btn-sm btn-decline text-white">
+                                  <i class="bi bi-x me-1"></i>Reject
+                              </button>
+                          </form>
+                      </div>
+                  </div>
+              <% }); %>
+          </div>
+      <% } else { %>
+          <div class="text-center mt-5">
+              <i class="bi bi-briefcase-x fs-1 text-muted"></i>
+              <p class="no-requests mt-3">No new job applications at the moment.</p>
+          </div>
+      <% } %>
+  </div>
+</div>
+
+ 
   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
        <div class="modal-content">

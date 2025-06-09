@@ -34,7 +34,7 @@ const ExpressError = require("./utils/ExpressError.js");
 
 const app = express();
 const PORT = 8381;
-const MONGO_URL = `mongodb+srv://parthpatidar1102:m6XfWAznzvok99PO@cluster0.boh7w.mongodb.net/FreelancingAndMentorConnect?retryWrites=true&w=majority&appName=Cluster0`
+const MONGO_URL = process.env.MONGO_URL;
 const secretCode = process.env.SECRET;
 
 

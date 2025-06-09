@@ -188,9 +188,32 @@ app.post("/register" , upload.single('user[profilePicture]') , validateUser , wr
     let filename = req.file.filename;
     let password = req.body.password;
     let user = req.body.user;
+
     let newUser = new User(user);
     newUser.profilePicture = {url , filename};
     const registeredUser = await User.register(newUser , password);
+
+        await sendEmail(
+            registeredUser.email,
+            "Welcome to Proguide",
+            `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #4CAF50;">Hi ${registeredUser.name || registeredUser.username},</h2>
+                <p style="font-size: 16px;">
+                    Welcome to <strong>Proguide</strong> — your journey to success starts here!
+                </p>
+                <p style="font-size: 15px;">
+                    Your registration was successful. We're excited to have you on board!
+                </p>
+                <p style="font-size: 15px;">
+                     Let's grow together.
+                </p>
+                <p style="font-size: 13px; color: #888;">Team Proguide</p>
+                </div>
+            `
+        );
+
+
     req.login(registeredUser , (err) => {
         if(err){
             return next(err);
@@ -405,17 +428,24 @@ app.post("/acceptApplication/:applicationId", isLoggedIn, wrapAsync(async (req, 
           return res.redirect("/jobApplications");
       }
 
-      // Send email to the freelancer
-      const freelancerEmail = application.freelancerId.email;
-      const subject = "Job Application Accepted";
-      const message = `
-         <p>Hello ${application.freelancerId.name},</p>
-         <p>Congratulations! Your job application for <strong>${application.jobId.title}</strong> has been accepted by the employer.</p>
-          <p>You will receive further details regarding the next steps soon. Please keep an eye on your email for additional instructions.</p>
-         <p>Looking forward to your successful collaboration!</p>
-    `;
+        const freelancerEmail = application.freelancerId.email;
+        const subject = "Job Application Accepted";
 
-      await sendEmail(freelancerEmail, subject, message);
+        const message = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <p style="font-size: 16px;">Hi ${application.freelancerId.name},</p>
+            <p style="font-size: 15px;">
+            🎉 Congratulations! Your application for <strong>${application.jobId.title}</strong> has been <span style="color: green;"><strong>accepted</strong></span> by the employer.
+            </p>
+            <p style="font-size: 15px;">
+            You'll receive the next steps shortly via email. Please stay tuned for more instructions.
+            </p>
+            <p style="font-size: 14px; color: #888;">Wishing you a great start to this collaboration!<br>Team Proguide</p>
+        </div>
+        `;
+
+        await sendEmail(freelancerEmail, subject, message);
+
 
       req.flash("success", "Application accepted. Freelancer notified via email.");
       res.redirect("/index");
@@ -442,16 +472,26 @@ app.post("/rejectApplication/:applicationId", isLoggedIn, wrapAsync(async (req, 
 
         // Send email to the freelancer
         const freelancerEmail = application.freelancerId.email;
-        const subject = "Job Application Rejected";
+        const subject = "Job Application Update";
+
         const message = `
-         <p>Hello ${application.freelancerId.name},</p>
-         <p>We appreciate your interest in the <strong>${application.jobId.title}</strong> position.</p>
-         <p>Unfortunately, the employer has decided to proceed with another candidate at this time.</p>
-         <p>We encourage you to explore other job opportunities on our platform and apply for roles that match your skills and expertise.</p>
-         <p>Wishing you the best in your job search!</p>
-`;
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <p style="font-size: 16px;">Hi ${application.freelancerId.name},</p>
+            <p style="font-size: 15px;">
+            Thank you for applying for <strong>${application.jobId.title}</strong>.
+            </p>
+            <p style="font-size: 15px;">
+            We regret to inform you that the employer has chosen to move forward with another candidate.
+            </p>
+            <p style="font-size: 15px;">
+            We truly value your interest and encourage you to explore other exciting opportunities on our platform that match your skills.
+            </p>
+            <p style="font-size: 14px; color: #888;">Wishing you all the best in your job search!<br>Team Proguide</p>
+        </div>
+        `;
 
         await sendEmail(freelancerEmail, subject, message);
+
 
         req.flash("success", "Application rejected. Freelancer notified via email.");
         res.redirect("/index");
@@ -630,10 +670,16 @@ app.post("/acceptSession/:sessionId", isLoggedIn,wrapAsync( async (req, res) => 
     const subject = "Session Request Accepted";
 
     const message = `
-      <p>Hello ${session.menteeId.name},</p>
-      <p>Your session request with Mentor ${session.mentorId.userId.name} has been accepted!</p>
-       <p>Please check your email for further updates. The mentor will provide the Google Meet link via email before the scheduled session.</p>
-      <p>We look forward to your productive session!</p>
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <p style="font-size: 16px;">Hi ${session.menteeId.name},</p>
+        <p style="font-size: 15px;">
+        Great news! Your session request with <strong>Mentor ${session.mentorId.userId.name}</strong> has been <span style="color: green;"><strong>accepted</strong></span>.
+        </p>
+        <p style="font-size: 15px;">
+        Please keep an eye on your inbox — the mentor will share the Google Meet link before the session.
+        </p>
+        <p style="font-size: 14px; color: #888;">Wishing you a valuable and productive session!<br>– Team Proguide</p>
+    </div>
     `;
 
     await sendEmail(menteeEmail, subject, message);
@@ -667,13 +713,19 @@ app.post("/declineSession/:sessionId", isLoggedIn,wrapAsync( async (req, res) =>
         return res.redirect("back");
       }
   
-      const message = `
-        <p>Hello ${session.menteeId.name},</p>
-        <p>We regret to inform you that your session request with Mentor ${session.mentorId.userId.name} has been declined.</p>
-        <p>You may consider scheduling another session at a different time.</p>
-        <p>Thank you for your understanding.</p>
-      `;
-  
+        const message = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <p style="font-size: 16px;">Hi ${session.menteeId.name},</p>
+            <p style="font-size: 15px;">
+            We’re sorry to inform you that your session request with <strong>Mentor ${session.mentorId.userId.name}</strong> has been declined.
+            </p>
+            <p style="font-size: 15px;">
+            Feel free to explore other available time slots or mentors for your learning journey.
+            </p>
+            <p style="font-size: 14px; color: #888;">Thank you for your understanding.<br>Team Proguide</p>
+        </div>
+        `;
+
       await sendEmail(session.menteeId.email, "Session Request Declined", message);
       req.flash("success", "Session declined, and the mentee has been notified.");
       res.redirect("/showProfile");

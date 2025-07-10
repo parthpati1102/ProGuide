@@ -127,7 +127,6 @@ app.all("*" , (req , res , next) => {
 }) 
 
 app.use((err , req , res , next) => {
-    console.error("Error:", err);
     let{statusCode = 500 , message = "Something Went Wrong!"} = err;
     res.status(statusCode).render("error.ejs" , {message});
 })

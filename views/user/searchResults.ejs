@@ -61,58 +61,69 @@
         <h3 class="section-title">
             <i class="bi bi-person-check me-2"></i>Available Mentors
         </h3>
+        <div class="container py-4">
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <% mentors.forEach(mentor => { %>
             <div class="col">
-                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="<%= mentor.userId.profilePicture ? mentor.userId.profilePicture.url : '/placeholder.svg?height=60&width=60' %>" 
-                                 alt="<%= mentor.userId.name %>" 
-                                 class="mentor-img rounded-circle me-3">
-                            <div>
-                                <h5 class="card-title mb-0"><%= mentor.userId.name %></h5>
-                                <p class="text-muted mb-0"><small><%= mentor.expertise || mentor.skills.join(", ") %></small></p>
-                            </div>
-                        </div>
-                        
-                        <p class="card-text flex-grow-1"><%= mentor.bio || "Expert mentor available to guide you through your learning journey." %></p>
-                        
-                        <div class="mt-auto">
-                            <p class="mb-2">
-                                <span class="availability-badge <%= mentor.availability === 'Available' ? 'available' : '' %>">
-                                    <i class="bi bi-calendar-check me-2"></i>
-                                    Availability: <%= mentor.availability || "Available" %>
-                                </span>
-                            </p>
-                            
-                            <% if (isLoggedIn) { %>
-                                <div class="d-flex align-items-center gap-2">
-                                    <% if (!mentor.availability || mentor.availability === "Available") { %>
-                                    <form action="/scheduleSession/<%= mentor._id %>" method="POST" class="d-inline flex-grow-1">
-                                        <button class="btn btn-outline-success w-100">Connect</button>
-                                    </form>
-                                    <% } %>
-                                    <a href="/showProfile/<%= mentor._id %>" class="btn btn-outline-success flex-grow-1">View Profile</a>
-                                </div>
-                            <% } else { %>
-                                <div class="login-prompt">
-                                    <i class="bi bi-lock me-2"></i>Login to connect with mentors
-                                </div>
-                            <% } %>
-                        </div>
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition rounded-4 p-3">
+                <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="<%= mentor.userId.profilePicture ? mentor.userId.profilePicture.url : '/placeholder.svg?height=60&width=60' %>" 
+                        alt="<%= mentor.userId.name %>" 
+                        class="mentor-img rounded-circle me-3"
+                        style="width: 60px; height: 60px; object-fit: cover;">
+                    <div>
+                    <h5 class="card-title mb-1 fw-semibold"><%= mentor.userId.name %></h5>
+                    <p class="text-muted small mb-0"><%= mentor.expertise || mentor.skills.join(", ") %></p>
                     </div>
                 </div>
+
+                <p class="card-text text-muted mb-3" style="flex-grow: 1;"><%= mentor.bio || "Expert mentor available to guide you through your learning journey." %></p>
+
+                <p class="mb-3">
+                    <span class="badge bg-primary fs-6">
+                    <i class="bi bi-currency-rupee me-1"></i>
+                    Session Fee: ₹<%= mentor.sessionFee || "N/A" %>
+                    </span>
+                </p>
+
+                <div class="mt-auto">
+                    <p class="mb-2">
+                    <span class="availability-badge <%= mentor.availability === 'Available' ? 'available' : 'unavailable' %>">
+                        <i class="bi bi-calendar-check me-2"></i>
+                        Availability: <%= mentor.availability || "Available" %>
+                    </span>
+                    </p>
+
+                    <% if (isLoggedIn) { %>
+                    <div class="d-flex flex-column gap-2 flex-md-row">
+                        <% if (!mentor.availability || mentor.availability === "Available") { %>
+                        <form action="/scheduleSession/<%= mentor._id %>" method="POST" class="flex-fill">
+                        <button class="btn btn-success w-100">Connect</button>
+                        </form>
+                        <% } %>
+                        <a href="/showProfile/<%= mentor._id %>" class="btn btn-outline-success flex-fill">View Profile</a>
+                    </div>
+                    <% } else { %>
+                    <div class="login-prompt text-muted mt-2">
+                        <i class="bi bi-lock me-2"></i>Login to connect with mentors
+                    </div>
+                    <% } %>
+                </div>
+                </div>
+            </div>
             </div>
             <% }) %>
-            
+
             <% if (mentors.length === 0) { %>
             <div class="col-12">
-                <div class="alert alert-info" role="alert">
-                    <i class="bi bi-info-circle me-2"></i>No mentors found matching your search criteria.
-                </div>
+            <div class="alert alert-info text-center" role="alert">
+                <i class="bi bi-info-circle me-2"></i>No mentors found matching your search criteria.
+            </div>
             </div>
             <% } %>
         </div>
+        </div>
+
     </div>
 </body>

@@ -1,0 +1,32 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+<div class="d-flex justify-content-center align-items-center min-vh-100" style="background: #f8f9fa;">
+  <div class="forgot-container" style="width:100%; max-width:400px;">
+    <div class="card shadow">
+      <div class="card-header text-center bg-white border-0">
+        <i class="bi bi-shield-lock-fill d-block fs-1 text-success"></i>
+        <h2 class="mb-0" style="color: #212529;">Verify OTP</h2>
+        <p class="mb-0 mt-2 opacity-75" style="color: #495057;">Enter the code sent to your email</p>
+      </div>
+      <div class="card-body">
+        <form action="/verify-otp" method="POST">
+          <input type="hidden" name="email" value="<%= email %>">
+          <div class="mb-3">
+            <label for="otp" class="form-label">
+              <i class="bi bi-key me-2 text-success"></i>OTP Code:
+            </label>
+            <input type="text" name="otp" id="otp" class="form-control" required placeholder="Enter OTP">
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="bi bi-check-circle me-2"></i>Verify & Login
+            </button>
+          </div>
+        </form>
+        <div class="info-box mt-4 text-center">
+          <i class="bi bi-info-circle me-2"></i>
+          The OTP is valid for 5 minutes. If you didn't receive it, check your spam folder or request a new one.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

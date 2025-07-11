@@ -18,7 +18,8 @@ module.exports.mentorSchema = Joi.object({
         goals: Joi.string().allow("", null), 
         availability: Joi.string().valid("Available", "Busy").default("Available"),
         education: Joi.string().allow("", null),
-        experience: Joi.string().allow("", null), 
+        experience: Joi.string().allow("", null),
+        sessionFee: Joi.number().min(0).required() 
         }).required(),
 });
 

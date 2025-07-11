@@ -23,6 +23,18 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  resetPasswordToken: {
+    type : String,
+  },
+  resetPasswordExpires: {
+    type  :  Date,
+  },
+  otp: {
+    type : String,
+  },
+  otpExpires: {
+    type : Date,
+  }
 });
 
 userSchema.plugin(passportLocalMongoose);

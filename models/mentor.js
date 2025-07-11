@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("./user.js");
+const { number } = require("joi");
 
 const mentorSchema = new mongoose.Schema({
   userId: {
@@ -25,6 +26,10 @@ const mentorSchema = new mongoose.Schema({
   },
   experience: {
     type: String, 
+  },
+
+  sessionFee: {
+    type : Number,
   },
   createdAt: {
     type: Date,

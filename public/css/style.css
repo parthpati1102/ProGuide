@@ -732,3 +732,28 @@ textarea {
                 width: 100%;
             }
         }
+
+  /* Mentor Cards CSS */
+  .hover-shadow:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.availability-badge.available {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.availability-badge.unavailable {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.mentor-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+/* Forgot Password Page */

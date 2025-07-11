@@ -57,6 +57,13 @@
                         <div class="invalid-feedback">This field is required!</div>
                     </div>
 
+                    <!-- Session Fee -->
+                    <div class="col-md-12">
+                        <label for="sessionFee" class="form-label">Session Fee (in ₹):</label>
+                        <input type="number" class="form-control" id="sessionFee" name="mentor[sessionFee]" min="0" value="<%= mentor.sessionFee %>" required />
+                        <div class="invalid-feedback">This field is required!</div>
+                    </div>
+
                     <!-- Submit Button -->
                     <div>
                         <button type="submit" class="btn styled-button btn-sm mt-2 mb-4">

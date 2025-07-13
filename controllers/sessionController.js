@@ -1,6 +1,7 @@
 const Mentor = require("../models/mentor");
 const SessionScheduling = require("../models/session");
 const sendEmail = require("../sendEmail.js");
+const createCalendarEvent = require("../utils/calendarEvent");
 
 exports.scheduleSessionForm = async (req, res) => {
     const mentor = await Mentor.findById(req.params.mentorId).populate("userId");
@@ -27,34 +28,113 @@ exports.scheduleSession = async (req, res) => {
 };
 
 exports.acceptSession = async (req, res) => {
+  try {
+    // Update session status
     const session = await SessionScheduling.findByIdAndUpdate(
-        req.params.sessionId,
-        { status: "Confirmed" },
-        { new: true }
-      ).populate({
-        path: "mentorId",
-        populate: {
-          path: "userId",
-          select: "name email",
+      req.params.sessionId,
+      { status: "Confirmed" },
+      { new: true }
+    ).populate("menteeId");
+
+    if (!session) {
+      req.flash("error", "Session not found.");
+      return res.redirect("/showProfile");
+    }
+
+    // Get full mentor with tokens
+    const mentor = await Mentor.findById(session.mentorId).populate("userId");
+    session.mentorId = mentor; // Manually attach full mentor object
+
+    // Parse and convert time from "11:00 AM" to 24-hour
+    const timeStr = session.time.trim();
+    const timeParts = timeStr.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/i);
+
+    if (!timeParts) {
+      throw new Error("Invalid time format. Expected format like '11:00 AM'");
+    }
+
+    let [_, hourStr, minuteStr, meridian] = timeParts;
+    let hours = parseInt(hourStr, 10);
+    const minutes = parseInt(minuteStr, 10);
+
+    if (meridian.toUpperCase() === "PM" && hours !== 12) {
+      hours += 12;
+    } else if (meridian.toUpperCase() === "AM" && hours === 12) {
+      hours = 0;
+    }
+
+    const date = new Date(session.date);
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid session.date value");
+    }
+
+    date.setHours(hours, minutes, 0);
+    const startDateTime = new Date(date);
+    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
+
+    // DEBUG LOG
+    // console.log("startDateTime:", startDateTime.toISOString());
+    // console.log("endDateTime:", endDateTime.toISOString());
+    // console.log("mentorTokens from DB:", mentor.googleTokens);
+
+    let meetLink = "";
+
+    // Create Google Calendar event if tokens exist
+    if (
+      mentor.googleTokens &&
+      mentor.googleTokens.access_token &&
+      mentor.googleTokens.refresh_token
+    ) {
+      const event = await createCalendarEvent(
+        mentor.googleTokens,
+        {
+          topic: session.topic || "Mentorship Session",
+          startTime: startDateTime.toISOString(),
+          endTime: endDateTime.toISOString(),
         },
-      }).populate("menteeId");
+        session.menteeId
+      );
+      meetLink = event.hangoutLink || "";
+    }
+
+    // Send confirmation email to mentee
     const menteeEmail = session.menteeId.email;
     const subject = "Session Request Accepted";
     const message = `
-    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-        <p style="font-size: 16px;">Hi ${session.menteeId.name},</p>
-        <p style="font-size: 15px;">
-        Great news! Your session request with <strong>Mentor ${session.mentorId.userId.name}</strong> has been <span style="color: green;"><strong>accepted</strong></span>.
-        </p>
-        <p style="font-size: 15px;">
-        Please keep an eye on your inbox — the mentor will share the Google Meet link before the session.
-        </p>
-        <p style="font-size: 14px; color: #888;">Wishing you a valuable and productive session!<br>– Team Proguide</p>
-    </div>
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <p style="font-size: 16px;">Hi ${session.menteeId.name},</p>
+          <p style="font-size: 15px;">
+          Great news! Your session request with <strong>Mentor ${mentor.userId.name}</strong> has been <span style="color: green;"><strong>accepted</strong></span>.
+          </p>
+          <p style="font-size: 15px;">
+          Your session is scheduled for <strong>${session.date.toDateString()} at ${session.time}</strong>.
+          </p>
+          ${
+            meetLink
+              ? `
+          <p style="font-size: 15px;">
+          Join the session using this Google Meet link:<br>
+          <a href="${meetLink}" style="color: #007bff; font-weight: bold;">${meetLink}</a>
+          </p>
+          `
+              : `
+          <p style="font-size: 15px;">
+          The mentor will share the Google Meet link before the session.
+          </p>
+          `
+          }
+          <p style="font-size: 14px; color: #888;">Wishing you a valuable and productive session!<br>– Team Proguide</p>
+      </div>
     `;
+
     await sendEmail(menteeEmail, subject, message);
-    req.flash("success", "Session accepted and mentee notified.");
+    req.flash("success", "Session accepted. Google Meet link sent to mentee.");
     res.redirect("/showProfile");
+  } catch (error) {
+    console.error("Error accepting session:", error);
+    req.flash("error", error.message || "Something went wrong.");
+    res.redirect("/showProfile");
+  }
 };
 
 exports.declineSession = async (req, res) => {

@@ -115,11 +115,13 @@ const userRoutes = require("./routes/user");
 const mentorRoutes = require("./routes/mentor");
 const jobRoutes = require("./routes/job");
 const sessionRoutes = require("./routes/session");
+const googleAuthRoutes = require("./routes/googleAuth");
 
 app.use("/", userRoutes);
 app.use("/", mentorRoutes);
 app.use("/", jobRoutes);
 app.use("/", sessionRoutes);
+app.use("/auth", googleAuthRoutes);
 
 // Error Handling
 app.all("*" , (req , res , next) => {

@@ -1,4 +1,5 @@
 const Mentor = require("../models/mentor");
+const moment = require("moment-timezone");
 const SessionScheduling = require("../models/session");
 const sendEmail = require("../sendEmail.js");
 const createCalendarEvent = require("../utils/calendarEvent");
@@ -27,9 +28,10 @@ exports.scheduleSession = async (req, res) => {
     res.redirect("/index");
 };
 
+
 exports.acceptSession = async (req, res) => {
   try {
-    // ✅ Step 1: Confirm the session
+    // ✅ Update session status
     const session = await SessionScheduling.findByIdAndUpdate(
       req.params.sessionId,
       { status: "Confirmed" },
@@ -41,20 +43,17 @@ exports.acceptSession = async (req, res) => {
       return res.redirect("/showProfile");
     }
 
-    // ✅ Step 2: Fetch full mentor with tokens
+    // ✅ Get full mentor with tokens and user info
     const mentor = await Mentor.findById(session.mentorId).populate("userId");
-    if (!mentor) {
-      req.flash("error", "Mentor not found.");
-      return res.redirect("/showProfile");
-    }
+    session.mentorId = mentor; // Attach full mentor object
 
-    session.mentorId = mentor; // attach full mentor
-
-    // ✅ Step 3: Parse session time
-    const timeStr = session.time.trim(); // e.g. "08:00 PM"
+    // ✅ Parse time string like "07:00 PM"
+    const timeStr = session.time.trim();
     const timeParts = timeStr.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/i);
 
-    if (!timeParts) throw new Error("Invalid time format (e.g. 08:00 PM expected)");
+    if (!timeParts) {
+      throw new Error("Invalid time format. Expected format like '07:00 PM'");
+    }
 
     let [_, hourStr, minuteStr, meridian] = timeParts;
     let hours = parseInt(hourStr, 10);
@@ -63,20 +62,19 @@ exports.acceptSession = async (req, res) => {
     if (meridian.toUpperCase() === "PM" && hours !== 12) hours += 12;
     if (meridian.toUpperCase() === "AM" && hours === 12) hours = 0;
 
-    // ✅ Step 4: Build start and end time using session.date
-    const date = new Date(session.date); // This is in UTC (e.g. 2025-08-15T00:00:00.000Z)
+    // ✅ Build start datetime in IST using moment-timezone
+    const startDateTime = moment.tz(session.date, "YYYY-MM-DD", "Asia/Kolkata")
+      .hour(hours)
+      .minute(minutes)
+      .second(0)
+      .millisecond(0)
+      .toDate();
 
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    date.setSeconds(0);
-    date.setMilliseconds(0);
+    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour duration
 
-    const startDateTime = new Date(date);
-    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // +1 hour
-
-    // ✅ Step 5: Create Google Meet event if tokens exist
     let meetLink = "";
 
+    // ✅ Create Google Calendar event if tokens exist
     if (
       mentor.googleTokens &&
       mentor.googleTokens.access_token &&
@@ -91,11 +89,10 @@ exports.acceptSession = async (req, res) => {
         },
         session.menteeId
       );
-
       meetLink = event.hangoutLink || "";
     }
 
-    // ✅ Step 6: Send email to mentee
+    // ✅ Send confirmation email to mentee
     const menteeEmail = session.menteeId.email;
     const subject = "Session Request Accepted";
     const message = `
@@ -109,12 +106,19 @@ exports.acceptSession = async (req, res) => {
           </p>
           ${
             meetLink
-              ? `<p style="font-size: 15px;">Join the session using this Google Meet link:<br>
-                 <a href="${meetLink}" style="color: #007bff; font-weight: bold;">${meetLink}</a>
-                 </p>`
-              : `<p style="font-size: 15px;">The mentor will share the Google Meet link before the session.</p>`
+              ? `
+          <p style="font-size: 15px;">
+          Join the session using this Google Meet link:<br>
+          <a href="${meetLink}" style="color: #007bff; font-weight: bold;">${meetLink}</a>
+          </p>
+          `
+              : `
+          <p style="font-size: 15px;">
+          The mentor will share the Google Meet link before the session.
+          </p>
+          `
           }
-          <p style="font-size: 14px; color: #888;">Wishing you a valuable and productive session!<br>– Team Proguide</p>
+          <p style="font-size: 14px; color: #888;">Wishing you a valuable and productive session!<br>– Team ProGuide</p>
       </div>
     `;
 

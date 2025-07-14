@@ -1,0 +1,38 @@
+<%- layout('/layouts/boilerplate') -%>
+
+<div class="d-flex justify-content-center align-items-center min-vh-100" style="background: #f8f9fa; padding-top: 60px; padding-bottom: 60px;">
+  <div class="forgot-container" style="width: 100%; max-width: 420px;">
+    <div class="card shadow">
+      <div class="card-header text-center bg-white border-0">
+        <i class="bi bi-calendar-event-fill d-block fs-1 text-success"></i>
+        <h2 class="mb-0" style="color: #212529;">Reschedule Session</h2>
+        <p class="mb-0 mt-2 opacity-75" style="color: #495057;">Update your session timing</p>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/rescheduleSession/<%= session._id %>">
+          <div class="mb-3">
+            <label for="newDate" class="form-label">
+              <i class="bi bi-calendar-check-fill me-2 text-success"></i>New Date
+            </label>
+            <input type="date" class="form-control" name="newDate" id="newDate" required />
+          </div>
+          <div class="mb-3">
+            <label for="newTime" class="form-label">
+              <i class="bi bi-clock-fill me-2 text-success"></i>New Time
+            </label>
+            <input type="text" class="form-control" name="newTime" id="newTime" placeholder="e.g. 07:00 PM" required />
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-arrow-repeat me-2"></i>Reschedule
+            </button>
+          </div>
+        </form>
+        <div class="info-box mt-4 text-center">
+          <i class="bi bi-info-circle me-2"></i>
+          The session timing will be updated and notifications will be sent.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

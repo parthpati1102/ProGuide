@@ -27,6 +27,10 @@ const sessionSchema = new mongoose.Schema({
   meetLink: {
     type: String 
   },
+  googleCalendarEventId: {
+  type: String,
+  default: null
+ },
   createdAt: {
     type: Date,
     default: Date.now,

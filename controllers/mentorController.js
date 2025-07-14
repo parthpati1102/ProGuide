@@ -1,6 +1,8 @@
 const Mentor = require("../models/mentor");
 const SessionScheduling = require("../models/session");
 
+
+
 exports.createProfileForm = (req, res) => {
     res.render("mentor/createProfile.ejs");
 };
@@ -90,3 +92,4 @@ exports.mentorList = async (req, res) => {
     const mentors = await Mentor.find(query).populate("userId");
     res.render("mentor/mentorList.ejs", { mentors });
 };
+

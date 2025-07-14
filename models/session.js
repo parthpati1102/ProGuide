@@ -24,6 +24,9 @@ const sessionSchema = new mongoose.Schema({
     enum: ["Pending", "Confirmed", "Cancelled"],
     default: "Pending",
   },
+  meetLink: {
+    type: String 
+  },
   createdAt: {
     type: Date,
     default: Date.now,

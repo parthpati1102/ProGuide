@@ -15,30 +15,52 @@ exports.createProfile = async (req, res) => {
 };
 
 exports.showProfile = async (req, res) => {
-    const { mentorId } = req.params;
-    let mentor;
-    let sessionRequests = [];
-    if (mentorId) {
-        mentor = await Mentor.findById(mentorId).populate("userId", "name email profilePicture");
-        if (!mentor) {
-            req.flash("error", "Mentor profile not found.");
-            return res.redirect("/mentors");
-        }
-    } else {
-        mentor = await Mentor.findOne({ userId: req.user._id }).populate("userId", "name email profilePicture");
-        if (!mentor) {
-            req.flash("error", "No profile found. Please create a profile first.");
-            return res.redirect("/createProfile");
-        }
-        sessionRequests = await SessionScheduling.find({ mentorId: mentor._id, status: "Pending" })
-            .populate("menteeId", "name email");
-        sessionRequests.forEach(request => {
-            const dateParts = request.date.toString().split(' ').slice(0, 4);
-            request.formattedDate = dateParts.join(' ');
-        });
+  const { mentorId } = req.params;
+  let mentor;
+  let sessionRequests = [];
+  let upcomingSessions = [];
+
+  if (mentorId) {
+    mentor = await Mentor.findById(mentorId).populate("userId", "name email profilePicture");
+    if (!mentor) {
+      req.flash("error", "Mentor profile not found.");
+      return res.redirect("/mentors");
     }
-    res.render("mentor/showProfile.ejs", { mentor, sessionRequests });
+  } else {
+    mentor = await Mentor.findOne({ userId: req.user._id }).populate("userId", "name email profilePicture");
+    if (!mentor) {
+      req.flash("error", "No profile found. Please create a profile first.");
+      return res.redirect("/createProfile");
+    }
+
+    // 🔔 Pending session requests
+    sessionRequests = await SessionScheduling.find({
+      mentorId: mentor._id,
+      status: "Pending",
+    }).populate("menteeId", "name email");
+
+    sessionRequests.forEach(request => {
+      const dateParts = request.date.toString().split(' ').slice(0, 4);
+      request.formattedDate = dateParts.join(' ');
+    });
+
+    // 📅 Upcoming confirmed sessions (with meet links)
+    upcomingSessions = await SessionScheduling.find({
+      mentorId: mentor._id,
+      status: "Confirmed",
+      date: { $gte: new Date() }, // upcoming only
+    })
+      .populate("menteeId", "name email")
+      .sort({ date: 1 }); // soonest first
+  }
+
+  res.render("mentor/showProfile.ejs", {
+    mentor,
+    sessionRequests,
+    upcomingSessions, // ✅ pass to view
+  });
 };
+
 
 exports.editProfileForm = async (req, res) => {
     let id = req.params.id;

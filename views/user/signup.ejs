@@ -1,98 +1,216 @@
 <%- layout('/layouts/boilerplate.ejs') -%>
-<div class="row">
-<div class="col-8 offset-2">
-<form method="post" action="/register" novalidate class="needs-validation"  enctype="multipart/form-data">
-  <div class="row g-3">
-    <div class="col-md-12 mt-5">
-      <label for="fullName" class="form-label">Full Name</label>
-      <input name="user[name]" type="text" class="form-control" placeholder="Please enter your full name"  id="fullName" required>
-      <div class="valid-feedback">
-        Looks good!
-      </div>
-    </div>
-
-    <div class="col-md-12 mb-3">
-      <label for="username4" class="form-label">Username</label>
-      <input name="user[username]" type="text" class="form-control" placeholder="Please enter your full name"  id="username4" required>
-      <div class="invalid-feedback">
-         please enter valid username.
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-5">
-        <label for="inputEmail4" class="form-label">Email</label>
-        <input name="user[email]" type="email" class="form-control"  placeholder="please enter your email" id="inputEmail4" required>
-        <div class="invalid-feedback">
-          please enter valid email.
-        </div>
-      </div>
-  
-      <div class="col-md-7 position-relative">
-        <label for="inputPass4" class="form-label">Password</label>
-        <div class="input-group">
-            <input name="password" type="password" class="form-control" placeholder="Please enter your password" id="inputPass4" required>
-            <span class="input-group-text bg-white" id="togglePass" style="cursor: pointer;">
-                <i class="bi bi-eye-slash bold-icon"></i>
-            </span>
-            <div class="valid-feedback">
-              password looks good!
+    <div class="main-content">
+        <div class="form-container">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-plus-fill d-block fs-1 text-success"></i>
+                <h1 class="form-title mt-2" style="color: #212529;">Join Us Today</h1>
             </div>
+            
+            <!-- Progress Bar
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div> -->
+
+            <form method="post" action="/register" novalidate class="needs-validation" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <!-- Full Name -->
+                    <div class="col-md-12 form-row">
+                        <label for="fullName" class="form-label">
+                            <i class="bi bi-person me-2"></i>Full Name
+                        </label>
+                        <input name="user[name]" type="text" class="form-control" placeholder="Enter your full name" id="fullName" required>
+                        <div class="valid-feedback">
+                            <i class="bi bi-check-circle me-1"></i>Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            <i class="bi bi-x-circle me-1"></i>Please enter your full name.
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="col-md-12 form-row">
+                        <label for="username4" class="form-label">
+                            <i class="bi bi-at me-2"></i>Username
+                        </label>
+                        <input name="user[username]" type="text" class="form-control" placeholder="Choose a unique username" id="username4" required>
+                        <div class="valid-feedback">
+                            <i class="bi bi-check-circle me-1"></i>Username is available!
+                        </div>
+                        <div class="invalid-feedback">
+                            <i class="bi bi-x-circle me-1"></i>Please enter a valid username.
+                        </div>
+                    </div>
+
+                    <!-- Email and Password Row -->
+                    <div class="row">
+                        <div class="col-md-6 form-row">
+                            <label for="inputEmail4" class="form-label">
+                                <i class="bi bi-envelope me-2"></i>Email
+                            </label>
+                            <input name="user[email]" type="email" class="form-control" placeholder="Enter your email" id="inputEmail4" required>
+                            <div class="valid-feedback">
+                                <i class="bi bi-check-circle me-1"></i>Email looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                <i class="bi bi-x-circle me-1"></i>Please enter a valid email.
+                            </div>
+                        </div>
+                    
+                        <div class="col-md-6 form-row">
+                            <label for="inputPass4" class="form-label">
+                                <i class="bi bi-lock me-2"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <input name="password" type="password" class="form-control" placeholder="Create a strong password" id="inputPass4" required>
+                                <span class="input-group-text" id="togglePass" style="cursor: pointer;">
+                                    <i class="bi bi-eye-slash"></i>
+                                </span>
+                            </div>
+                            <div class="valid-feedback">
+                                <i class="bi bi-check-circle me-1"></i>Password looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                <i class="bi bi-x-circle me-1"></i>Please enter a valid password.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Picture -->
+                    <div class="col-md-12 form-row">
+                        <label for="uploadImage" class="form-label">
+                            <i class="bi bi-image me-2"></i>Profile Picture
+                        </label>
+                        <input name="user[profilePicture]" type="file" class="form-control" id="uploadImage" accept="image/*" required>
+                        <div class="valid-feedback">
+                            <i class="bi bi-check-circle me-1"></i>Image uploaded successfully!
+                        </div>
+                        <div class="invalid-feedback">
+                            <i class="bi bi-x-circle me-1"></i>Please upload a profile picture.
+                        </div>
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="col-md-12 form-row">
+                        <label for="inputState" class="form-label">
+                            <i class="bi bi-briefcase me-2"></i>Role
+                        </label>
+                        <select name="user[role]" id="inputState" class="form-select" required>
+                            <option value="">Choose your role...</option>
+                            <option value="Freelancer">Freelancer</option>
+                            <option value="Employer">Employer</option>
+                            <option value="Mentor">Mentor</option>
+                            <option value="Mentee">Mentee</option>
+                        </select>
+                        <div class="valid-feedback">
+                            <i class="bi bi-check-circle me-1"></i>Role selected!
+                        </div>
+                        <div class="invalid-feedback">
+                            <i class="bi bi-x-circle me-1"></i>Please select a role.
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="col-12 form-row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            </label>
+                            <div class="valid-feedback">
+                                <i class="bi bi-check-circle me-1"></i>Thank you for agreeing!
+                            </div>
+                            <div class="invalid-feedback">
+                                <i class="bi bi-x-circle me-1"></i>You must agree before submitting.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12">
+                        <button type="submit" class="styled-button">
+                            <i class="bi bi-person-plus me-2"></i>Create Account
+                        </button>
+                    </div>
+                    
+                    <!-- Login Link
+                    <div class="col-12 text-center mt-3">
+                        <p class="text-muted">Already have an account? <a href="/login" class="text-decoration-none">Sign in here</a></p>
+                    </div> -->
+                </div>
+            </form>
         </div>
-      </div>
-    </div>
-    
-    <div class="col-md-12">
-      <label for="uploadImage" class="form-label">Upload Your Image</label>
-      <input name="user[profilePicture]" type="file" class="form-control" id="uploadImage" required>
     </div>
 
-    <div class="col-md-12">
-      <label for="inputState" class="form-label">Role</label>
-      <select name="user[role]" id="inputState" class="form-select" required>
-        <option selected>Choose...</option>
-        <option>Freelancer</option>
-        <option>Employer</option>
-        <option>Mentor</option>
-        <option>Mentee</option>
-      </select>
-      <div class="invalid-feedback">
-        please select role.
-      </div>
-    </div>
+     <script>
+        // Password toggle functionality
+        document.getElementById('togglePass').addEventListener('click', function () {
+            const passwordField = document.getElementById('inputPass4');
+            const icon = this.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        });
 
-    <div class="col-12">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-        <label class="form-check-label" for="invalidCheck">
-          Agree to terms and conditions
-        </label>
-        <div class="invalid-feedback">
-          You must agree before submitting.
-        </div>
-      </div>
-    </div>
+        // Form validation and progress bar
+        const form = document.querySelector('form');
+        const progressBar = document.querySelector('.progress-bar');
+        const inputs = document.querySelectorAll('input[required], select[required]');
 
-    <div>
-      <button type="submit" class="btn styled-button btn-sm mt-2 mb-4">Register</button>
-    </div>
-    
-  </div>
-</form>
-</div>
-</div>
-<script>
-  document.getElementById('togglePass').addEventListener('click', function () {
-    const passwordField = document.getElementById('inputPass4');
-    const icon = this.querySelector('i');
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text'; // Show password
-        icon.classList.remove('bi-eye-slash');
-        icon.classList.add('bi-eye');
-    } else {
-        passwordField.type = 'password'; // Hide password
-        icon.classList.remove('bi-eye');
-        icon.classList.add('bi-eye-slash');
-    }
-});
-</script>
+        function updateProgress() {
+            let filledInputs = 0;
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    if (input.checked) filledInputs++;
+                } else if (input.type === 'file') {
+                    if (input.files.length > 0) filledInputs++;
+                } else {
+                    if (input.value.trim() !== '') filledInputs++;
+                }
+            });
+            
+            const progress = (filledInputs / inputs.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', updateProgress);
+            input.addEventListener('change', updateProgress);
+        });
+
+        // Bootstrap form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                const forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Add smooth animations to form fields
+        document.querySelectorAll('.form-control, .form-select').forEach(field => {
+            field.addEventListener('focus', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            field.addEventListener('blur', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>

@@ -23,15 +23,22 @@ body {
   }
 
   .navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
-    color: #1dbf73;
-    text-transform: uppercase;
-    margin-left: -40px !important;
-  }
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #1dbf73;
+  text-transform: uppercase;
+  margin-left: 0 !important; 
+  padding-left: 0.5rem;  
+}
   
   .navbar-brand:hover {
     color: #17a865;
+  }
+
+  @media (max-width: 576px) {
+     .navbar-brand i {
+     font-size: 1 rem;
+    }
   }
   
   .search-bar {
@@ -196,7 +203,7 @@ body {
   height: 35px;
 }
 
-/* Mentor Profile Edite */
+/* Mentor Profile Edit */
 
 .btn-primary {
   background-color: #1dbf73;
@@ -756,4 +763,170 @@ textarea {
   border: 2px solid #ddd;
 }
 
-/* Forgot Password Page */
+/* Registration System */
+* Main content area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Form container */
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1dbf73, #28a745);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* Form styling */
+        .form-label {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+        }
+
+        /* .form-control:valid {
+            border-color: #28a745;
+        } */
+
+        /* .form-control:invalid {
+            border-color: #dc3545;
+        } */
+
+        /* Input group styling */
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-text {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e9ecef;
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .input-group-text:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group .form-control {
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+        }
+
+        .input-group .form-control:focus + .input-group-text {
+            border-color: #667eea;
+        }
+
+        /* File input styling */
+        .form-control[type="file"] {
+            padding: 8px 16px;
+        }
+
+        /* Checkbox styling */
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-right: 8px;
+        }
+
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .form-check-label {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        /* Button styling */
+        .styled-button {
+            background: linear-gradient(135deg, #1dbf73 0%, #28a745);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            width: 100%;
+        }
+
+        .styled-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #1dbf73 0%, #28a745 100%);
+        }
+
+        .styled-button:active {
+            transform: translateY(0);
+        }
+
+        /* Feedback messages */
+        .valid-feedback {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-weight: 500;
+        }

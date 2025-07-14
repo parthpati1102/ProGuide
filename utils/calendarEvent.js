@@ -36,6 +36,13 @@ async function createCalendarEvent(mentorTokens, sessionDetails, mentee) {
         timeZone: "Asia/Kolkata",
       },
       attendees: [{ email: mentee.email }],
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: "email", minutes: 60 },  // ⏰ Email 1 hour before
+          { method: "popup", minutes: 10 },  // 🔔 Popup 10 minutes before
+        ],
+      },
       conferenceData: {
         createRequest: {
           requestId: "meet-" + Date.now(),

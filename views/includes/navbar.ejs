@@ -1,7 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm">
     <div class="container">
       <!-- Logo -->
-      <a class="navbar-brand" href="/index"><i class="fa-solid fa-handshake"></i> ProGuide</a>
+      <a class="navbar-brand d-flex align-items-center gap-2  px-2" href="/index">
+        <i class="fa-solid fa-handshake fa-lg"></i>
+        <span class="fw-semibold">ProGuide</span>
+      </a>
 
       <!-- Hamburger -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,9 +153,11 @@
   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
        <div class="modal-content">
-        <div class="modal-header d-flex justify-content-center position-relative bg-black">
-          <h1 class="modal-title-register fs-2 text-white  px-3 py-2 rounded" id="staticBackdropLabel">Please Login</h1>
-          <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-header flex-column text-center bg-white border-0">
+          <i class="bi bi-person-circle fs-1 text-success"></i>
+          <h2 class="mb-0 mt-2" style="color: #212529;">Please Login</h2>
+          <p class="mb-0 mt-2 opacity-75" style="color: #495057;">Access your account to continue</p>
+          <button type="button" class="btn-close position-absolute end-0 top-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form method="post" action="/login" class="needs-validation" novalidate>

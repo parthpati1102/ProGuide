@@ -90,6 +90,10 @@ exports.acceptSession = async (req, res) => {
         session.menteeId
       );
       meetLink = event.hangoutLink || "";
+
+      // ✅ Save meet link to DB
+      session.meetLink = meetLink;
+      await session.save();
     }
 
     // ✅ Send confirmation email to mentee

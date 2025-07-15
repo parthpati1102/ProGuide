@@ -1,76 +1,96 @@
 <%- layout('/layouts/boilerplate.ejs') -%>
 
-    <div class="row">
-        <div class="col-8 offset-2">
-            <!-- <h2 class="text-center  modal-title-register mb-4">Mentee Registration Form</h2> -->
-            <form method="POST" action="/createProfile" novalidate class="needs-validation"  id="menteeForm" class="form-container mx-auto" >
-
-                <!-- Bio -->
-                <div class="row g-3">
-                    <div class="col-md-12 mt-5">
-                        <label for="bio" class="form-label">Short Bio</label>
-                        <textarea class="form-control" id="bio" name="mentor[bio]" rows="3" maxlength="500"
-                            placeholder="Write a short bio about yourself..." required></textarea>
-                        <small class="form-text text-muted">Maximum 500 characters.</small>
-                        <div class="invalid-feedback">This field is required!</div>
-                    </div>
-
-                    <!-- Skills -->
-                    <div class="col-md-12">
-                        <label for="skills" class="form-label">Skills</label>
-                        <input type="text" class="form-control" id="skills" name="mentor[skills]"
-                            placeholder="Enter your skills (comma-separated)" required />
-                        <small class="form-text text-muted">E.g., JavaScript, Python, Machine Learning</small>
-                        <div class="invalid-feedback">This field is required!</div>
-                    </div>
-
-                    <!-- Goals -->
-                    <div class="col-md-12">
-                        <label for="goals" class="form-label">Goals</label>
-                        <textarea class="form-control" id="goals" name="mentor[goals]" rows="2"
-                            placeholder="Describe your goals or aspirations" required></textarea>
-                        <div class="invalid-feedback">This field is required!</div>
-                    </div>
-
-                    <!-- Availability -->
-                    <div class="col-md-12">
-                        <label for="availability" class="form-label">Availability</label>
-                        <select class="form-select" id="availability" name="mentor[availability]" required>
-                            <option value="Available" selected>Available</option>
-                            <option value="Busy">Busy</option>
-                        </select>
-                    </div>
-
-                    <!-- Education -->
-                    <div class="col-md-12">
-                        <label for="education" class="form-label">Education</label>
-                        <input type="text" class="form-control" id="education" name="mentor[education]"
-                            placeholder="Enter your educational background" required />
-                        <div class="invalid-feedback">This field is required!</div>
-                    </div>
-
-                    <!-- Experience -->
-                    <div class="col-md-12">
-                        <label for="experience" class="form-label">Experience</label>
-                        <textarea class="form-control" id="experience" name="mentor[experience]" rows="3"
-                            placeholder="Describe your prior experience or achievements" required></textarea>
-                        <div class="invalid-feedback">This field is required!</div>
-                    </div>
-
-                    <!-- Session Fees -->
-                    <div class="col-md-12">
-                        <label for="sessionFee" class="form-label">Session Fee (in ₹):</label>
-                        <input type="number" class="form-control" id="sessionFee" name="mentor[sessionFee]" min="0" required />
-                        <div class="invalid-feedback">This field is required!</div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div>
-                        <button type="submit" class="btn styled-button btn-sm mt-2 mb-4">
-                            Create
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+<div class="main-content">
+  <div class="form-container">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-lines-fill d-block fs-1 text-success"></i>
+      <h1 class="form-title mt-2" style="color: #212529 !important;">Create Your Mentor Profile</h1>
     </div>
+    <p class="form-subtitle">Help mentees know you better by filling out the details</p>
+
+    <form method="POST" action="/createProfile" novalidate class="needs-validation">
+      <div class="row g-3">
+
+        <!-- Bio -->
+        <div class="col-md-12 form-row">
+          <label for="bio" class="form-label">
+            <i class="bi bi-pencil me-2"></i>Short Bio
+          </label>
+          <textarea class="form-control" id="bio" name="mentor[bio]" rows="3" maxlength="500"
+                    placeholder="Write a short bio about yourself..." required></textarea>
+          <small class="form-text text-muted">Maximum 500 characters.</small>
+          <div class="invalid-feedback">This field is required!</div>
+        </div>
+
+        <!-- Skills -->
+        <div class="col-md-12 form-row">
+          <label for="skills" class="form-label">
+            <i class="bi bi-lightning me-2"></i>Skills
+          </label>
+          <input type="text" class="form-control" id="skills" name="mentor[skills]"
+                 placeholder="Enter your skills (comma-separated)" required />
+          <small class="form-text text-muted">E.g., JavaScript, Python, Machine Learning</small>
+          <div class="invalid-feedback">This field is required!</div>
+        </div>
+
+        <!-- Goals -->
+        <div class="col-md-12 form-row">
+          <label for="goals" class="form-label">
+            <i class="bi bi-bullseye me-2"></i>Goals
+          </label>
+          <textarea class="form-control" id="goals" name="mentor[goals]" rows="2"
+                    placeholder="Describe your goals or aspirations" required></textarea>
+          <div class="invalid-feedback">This field is required!</div>
+        </div>
+
+        <!-- Availability -->
+        <div class="col-md-12 form-row">
+          <label for="availability" class="form-label">
+            <i class="bi bi-calendar-check me-2"></i>Availability
+          </label>
+          <select class="form-select" id="availability" name="mentor[availability]" required>
+            <option value="Available" selected>Available</option>
+            <option value="Busy">Busy</option>
+          </select>
+        </div>
+
+        <!-- Education -->
+        <div class="col-md-12 form-row">
+          <label for="education" class="form-label">
+            <i class="bi bi-mortarboard me-2"></i>Education
+          </label>
+          <input type="text" class="form-control" id="education" name="mentor[education]"
+                 placeholder="Enter your educational background" required />
+          <div class="invalid-feedback">This field is required!</div>
+        </div>
+
+        <!-- Experience -->
+        <div class="col-md-12 form-row">
+          <label for="experience" class="form-label">
+            <i class="bi bi-award me-2"></i>Experience
+          </label>
+          <textarea class="form-control" id="experience" name="mentor[experience]" rows="3"
+                    placeholder="Describe your prior experience or achievements" required></textarea>
+          <div class="invalid-feedback">This field is required!</div>
+        </div>
+
+        <!-- Session Fee -->
+        <div class="col-md-12 form-row">
+          <label for="sessionFee" class="form-label">
+            <i class="bi bi-currency-rupee me-2"></i>Session Fee
+          </label>
+          <input type="number" class="form-control" id="sessionFee" name="mentor[sessionFee]" min="0" required />
+          <div class="invalid-feedback">This field is required!</div>
+        </div>
+
+        <!-- Submit -->
+        <div class="col-12 text-center">
+          <button type="submit" class="styled-button mt-3">
+            <i class="bi bi-plus-circle me-2"></i>Create Profile
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>

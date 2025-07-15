@@ -1,98 +1,146 @@
-<nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm">
-    <div class="container">
-      <!-- Logo -->
-      <a class="navbar-brand d-flex align-items-center gap-2  px-2" href="/index">
-        <i class="fa-solid fa-handshake fa-lg"></i>
-        <span class="fw-semibold">ProGuide</span>
-      </a>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-2">
+  <div class="container-fluid px-lg-5">
+    
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/index">
+      <i class="fa-solid fa-handshake fa-lg text-success"></i>
+      <span class="fw-bold text-success">ProGuide</span>
+    </a>
 
-      <!-- Hamburger -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <!-- Toggler -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <!-- Navbar Content -->
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <!-- Search Bar -->
-        <% if (currUser && (currUser.role === "Mentee" || currUser.role === "Mentor")) { %>
-          <!-- Mentor Search Form -->
-          <form method="GET" action="/mentors" class="d-flex mx-auto search-bar">
-              <input class="form-control me-2" name="skill" type="search" placeholder="What service are you looking for today?" aria-label="Search">
-              <button class="btn btn-search" type="submit">Search</button>
-          </form>
+    <!-- Content -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      
+     <!-- Centered Search Bar -->
+    <div class="mx-auto w-100 px-3 px-lg-5 my-3 my-lg-0" style="max-width: 550px;">
+      <% if (currUser && (currUser.role === "Mentee" || currUser.role === "Mentor")) { %>
+        <form method="GET" action="/mentors" class="d-flex gap-2 align-items-center">
+          <div class="flex-grow-1">
+            <input 
+              class="form-control rounded-pill py-2 px-3" 
+              name="skill" 
+              type="search" 
+              placeholder="Search services..." 
+              aria-label="Search"
+              style="height: 45px;"
+            >
+          </div>
+          <div>
+            <button 
+              class="btn btn-success rounded-pill px-4 py-2" 
+              type="submit"
+              style="height: 45px;"
+            >
+              Search
+            </button>
+          </div>
+        </form>
       <% } else if (currUser && (currUser.role === "Freelancer" || currUser.role === "Employer")) { %>
-          <!-- Freelancer Search Form -->
-          <form method="GET" action="/joblist" class="d-flex mx-auto search-bar">
-              <input class="form-control me-2" name="skill" type="search" placeholder="Search for jobs..." aria-label="Search">
-              <button class="btn btn-search" type="submit">Search</button>
-          </form>
+        <form method="GET" action="/joblist" class="d-flex gap-2 align-items-center">
+          <div class="flex-grow-1">
+            <input 
+              class="form-control rounded-pill py-2 px-3" 
+              name="skill" 
+              type="search" 
+              placeholder="Search jobs..." 
+              aria-label="Search"
+              style="height: 45px;"
+            >
+          </div>
+          <div>
+            <button 
+              class="btn btn-success rounded-pill px-4 py-2" 
+              type="submit"
+              style="height: 45px;"
+            >
+              Search
+            </button>
+          </div>
+        </form>
       <% } else { %>
-          <!-- Default Search Form for Unauthenticated Users -->
-          <form method="GET" action="/search" class="d-flex mx-auto search-bar">
-              <input class="form-control me-2" name="query" type="search" placeholder="Search anything..." aria-label="Search">
-              <button class="btn btn-search" type="submit">Search</button>
-          </form>
+        <form method="GET" action="/search" class="d-flex gap-2 align-items-center">
+          <div class="flex-grow-1">
+            <input 
+              class="form-control rounded-pill py-2 px-3" 
+              name="query" 
+              type="search" 
+              placeholder="Search..." 
+              aria-label="Search"
+              style="height: 45px;"
+            >
+          </div>
+          <div>
+            <button 
+              class="btn btn-success rounded-pill px-4 py-2" 
+              type="submit"
+              style="height: 45px;"
+            >
+              Search
+            </button>
+          </div>
+        </form>
       <% } %>
+    </div>
 
-        <!-- Right-side Links -->
-        <ul class="navbar-nav ms-auto align-items-center">
-        <% if (!currUser) { %> <!-- If user is not logged in -->
-          <ul class="navbar-nav nav-buttons">
-            <li class="nav-item">
-              <a class="btn btn-custom btn-register me-3" href="/register">
-                <i class="bi bi-person-plus-fill"></i>
-                <span>Register</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="btn btn-custom btn-login" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                <i class="bi bi-box-arrow-in-right"></i>
-                <span>Login</span>
-              </a>
-            </li>
-          </ul>
-          <!-- <li class="nav-item">
-            <a class="btn btn-custom text-white" href="#">Join Now</a>
-          </li> -->
-        <% } if(currUser) { %> <!-- If user is logged in -->
-        <% if (currUser && currUser.role === "Employer") { %>
-          <button class="btn btn-custom text-white me-3" data-bs-toggle="offcanvas" data-bs-target="#jobApplications">
-              <i class="bi bi-briefcase"></i> View Job Applications
-          </button>
-       <% } %>
+
+      <!-- Right Actions -->
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <% if (!currUser) { %>
+          <li class="nav-item">
+            <a class="btn btn-outline-success px-3" href="/register">
+              <i class="bi bi-person-plus-fill me-1"></i> Register
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-success px-3" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            </a>
+          </li>
+        <% } else { %>
+
+          <% if (currUser.role === "Employer") { %>
+          <li class="nav-item">
+            <button class="btn btn-outline-success px-3" data-bs-toggle="offcanvas" data-bs-target="#jobApplications">
+              <i class="bi bi-briefcase me-1"></i> Applications
+            </button>
+          </li>
+          <% } %>
 
           <li class="nav-item">
             <% if (showCreateProfile && currUser.role === "Mentor") { %>
-              <a class="btn btn-custom text-white" href="/createProfile">Create Profile</a>
-            <% } else if(currUser.role === "Mentor"){ %>
-              <a class="btn btn-custom text-white" href="/createProfile/<%= mentorProfile.id %>/editProfile">Update Profile</a>
-            <% } else if(currUser.role === "Employer"){ %>
-              <a class="btn btn-custom text-white" href="/jobs/new">Post a Job</a>
+              <a class="btn btn-outline-success px-3" href="/createProfile">Create Profile</a>
+            <% } else if (currUser.role === "Mentor") { %>
+              <a class="btn btn-outline-success px-3" href="/createProfile/<%= mentorProfile.id %>/editProfile">Edit Profile</a>
+            <% } else if (currUser.role === "Employer") { %>
+              <a class="btn btn-outline-success px-3" href="/jobs/new">Post Job</a>
             <% } %>
           </li>
+
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="<%= currUser && currUser.profilePicture.url ? currUser.profilePicture.url : '/default-avatar.png' %>" 
-                   alt="Profile" 
-                   class="rounded-circle" 
-                   width="30" 
-                   height="30">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <img src="<%= currUser?.profilePicture?.url || '/default-avatar.png' %>" alt="Avatar"
+                   class="rounded-circle" width="32" height="32" style="object-fit: cover;">
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <% if(currUser.role === "Mentor") { %>
-              <li><a class="dropdown-item" href="/showProfile">Dashboard</a></li>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <% if (currUser.role === "Mentor") { %>
+                <li><a class="dropdown-item" href="/showProfile">Dashboard</a></li>
               <% } %>
-              <% if(currUser.role === "Employer") { %>
-                <li><a class="dropdown-item" href="/myJobs">My Job Posts</a></li>
+              <% if (currUser.role === "Employer") { %>
+                <li><a class="dropdown-item" href="/myJobs">My Jobs</a></li>
               <% } %>
               <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
           </li>
         <% } %>
       </ul>
-      </div>
     </div>
-  </nav>
+  </div>
+</nav>
+
 
   <!-- Bootstrap Offcanvas for Job Applications -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="jobApplications">

@@ -26,8 +26,8 @@ const validateJob = (req, res , next) => {
     }
 }
 
-router.get("/jobs/new", wrapAsync(newJobForm));
-router.post("/jobs", wrapAsync(createJob));
+router.get("/jobs/new", isLoggedIn, wrapAsync(newJobForm));
+router.post("/jobs",  isLoggedIn, wrapAsync(createJob));
 router.get("/myJobs", isLoggedIn, wrapAsync(myJobs));
 router.post("/closeJob/:jobId", isLoggedIn, wrapAsync(closeJob));
 router.get("/joblist", isLoggedIn, wrapAsync(jobList));

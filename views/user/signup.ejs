@@ -30,7 +30,7 @@
                     </div>
 
                     <!-- Username -->
-                    <div class="col-md-12 form-row">
+                    <div class="mb-3">
                         <label for="username4" class="form-label">
                             <i class="bi bi-at me-2"></i>Username
                         </label>
@@ -43,11 +43,12 @@
                         </div>
                     </div>
 
-                    <!-- Email and Password Row -->
+                    <!-- Email and Password in one row -->
                     <div class="row">
-                        <div class="col-md-6 form-row">
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
                             <label for="inputEmail4" class="form-label">
-                                <i class="bi bi-envelope me-2"></i>Email
+                                <i class="bi bi-envelope me-1"></i>Email
                             </label>
                             <input name="user[email]" type="email" class="form-control" placeholder="Enter your email" id="inputEmail4" required>
                             <div class="valid-feedback">
@@ -57,13 +58,14 @@
                                 <i class="bi bi-x-circle me-1"></i>Please enter a valid email.
                             </div>
                         </div>
-                    
-                        <div class="col-md-6 form-row">
+
+                        <!-- Password -->
+                        <div class="col-md-6 mb-3">
                             <label for="inputPass4" class="form-label">
-                                <i class="bi bi-lock me-2"></i>Password
+                                <i class="bi bi-lock me-1"></i>Password
                             </label>
                             <div class="input-group">
-                                <input name="password" type="password" class="form-control" placeholder="Create a strong password" id="inputPass4" required>
+                                <input name="password" type="password" class="form-control" placeholder="Create password" id="inputPass4" required>
                                 <span class="input-group-text" id="togglePass" style="cursor: pointer;">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
@@ -76,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Profile Picture -->
                     <div class="col-md-12 form-row">
                         <label for="uploadImage" class="form-label">

@@ -71,10 +71,26 @@ exports.editProfileForm = async (req, res) => {
 };
 
 exports.updateProfile = async (req, res) => {
-    let id = req.params.id;
-    await Mentor.findByIdAndUpdate(id, { ...req.body.mentor });
-    req.flash("success", "Profile Updated successfully!");
+  try {
+    const { id } = req.params;
+    const updatedData = req.body.mentor;
+
+    // 💡 Convert skills string to array
+    if (typeof updatedData.skills === "string") {
+      updatedData.skills = updatedData.skills
+        .split(",")
+        .map(skill => skill.trim())
+        .filter(skill => skill.length > 0);
+    }
+
+    await Mentor.findByIdAndUpdate(id, updatedData, { new: true });
+    req.flash("success", "Profile updated successfully!");
     res.redirect("/showProfile");
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    req.flash("error", "Failed to update profile.");
+    res.redirect("/editProfile/" + req.params.id);
+  }
 };
 
 exports.deleteProfile = async (req, res) => {

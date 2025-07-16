@@ -1,5 +1,8 @@
 <%- layout('/layouts/boilerplate.ejs') -%>
 
+<!-- Flatpickr Calendar Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 <div class="container d-flex justify-content-center align-items-center min-vh-100" style="padding-top: 80px; padding-bottom: 80px;">
     <div class="card shadow-lg p-4" style="max-width: 450px; width: 100%;">
         <div class="card-body">
@@ -7,14 +10,16 @@
             <h5 class="text-center text-primary mb-3">with <%= mentor.userId.name %></h5>
 
             <form method="POST" action="/scheduleSession/<%= mentor.id %>" novalidate class="needs-validation">
+                <!-- 📅 Date Field with Flatpickr -->
                 <div class="mb-3">
                     <label for="date" class="form-label fw-bold">Select Date</label>
-                    <input type="date" class="form-control" name="date" required>
+                    <input type="text" class="form-control" id="date" name="date" placeholder="Pick a date" required>
                     <div class="invalid-feedback">
                         This field is required!
                     </div>
                 </div>
 
+                <!-- ⏰ Time Picker + AM/PM -->
                 <div class="mb-3">
                     <label for="time" class="form-label fw-bold">Select Time</label>
                     <div class="d-flex">
@@ -25,8 +30,31 @@
                         </select>
                     </div>
                 </div>
+
                 <button type="submit" class="btn btn-primary w-100">Request Session</button>
             </form>
         </div>
     </div>
 </div>
+
+<!-- Flatpickr Script -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const mentorId = "<%= mentor._id %>";
+
+        fetch(`/api/booked-dates/${mentorId}`)
+            .then(response => response.json())
+            .then(data => {
+                const booked = data.bookedDates; // array of "YYYY-MM-DD"
+                flatpickr("#date", {
+                    minDate: "today",
+                    disable: booked,
+                    dateFormat: "Y-m-d"
+                });
+            })
+            .catch(err => {
+                console.error("Error loading booked dates:", err);
+            });
+    });
+</script>

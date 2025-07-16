@@ -9,7 +9,8 @@ const {
     declineSession,
     showRescheduleForm,
     rescheduleSession,
-    cancelSession
+    cancelSession,
+    getBookedDates
 } = require("../controllers/sessionController");
 
 router.get("/scheduleSession/:mentorId", isLoggedIn, wrapAsync(scheduleSessionForm));
@@ -19,5 +20,6 @@ router.post("/declineSession/:sessionId", isLoggedIn, wrapAsync(declineSession))
 router.get("/rescheduleSession/:id", isLoggedIn, wrapAsync(showRescheduleForm));
 router.post("/rescheduleSession/:sessionId", isLoggedIn, wrapAsync(rescheduleSession));
 router.post("/cancelSession/:sessionId", isLoggedIn, wrapAsync(cancelSession));
+router.get("/api/booked-dates/:mentorId", isLoggedIn, wrapAsync(getBookedDates));
 
 module.exports = router;

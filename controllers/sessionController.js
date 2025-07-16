@@ -364,8 +364,25 @@ exports.cancelSession = async (req, res) => {
     res.redirect("/showProfile");
 
   } catch (error) {
-    console.error("❌ Error cancelling session:", error);
+    console.error("Error cancelling session:", error);
     req.flash("error", "Something went wrong while cancelling.");
     res.redirect("/showProfile");
+  }
+};
+
+// Get Booked Dates API (used by mentee calendar)
+exports.getBookedDates = async (req, res) => {
+  try {
+    const mentorId = req.params.mentorId;
+    const sessions = await SessionScheduling.find({ mentorId });
+
+    const bookedDates = sessions.map(session =>
+      session.date.toISOString().split("T")[0]
+    );
+
+    return res.json({ bookedDates });
+  } catch (err) {
+    console.error("Error fetching booked dates:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 };

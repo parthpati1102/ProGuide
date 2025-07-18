@@ -1,0 +1,116 @@
+<%- layout('/layouts/boilerplate.ejs') -%>
+
+<div class="container py-4">
+  <div class="card shadow-lg rounded-4 chat-card border-0">
+    <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3 px-4">
+      <div class="d-flex align-items-center gap-2">
+        <img src="https://ui-avatars.com/api/?name=<%= receiver.name %>&background=random" class="rounded-circle" width="40" height="40" alt="avatar">
+        <div>
+          <h6 class="mb-0 fw-semibold"><%= receiver.name %></h6>
+          <!-- <span class="text-success small"><i class="bi bi-circle-fill" style="font-size: 0.6rem;"></i> Online</span> -->
+        </div>
+      </div>
+    </div>
+
+    <div id="chatBox" class="card-body chat-body overflow-auto px-4">
+      <% messages.forEach(msg => { %>
+        <div class="d-flex <%= String(msg.senderId) === String(senderId) ? 'justify-content-end' : 'justify-content-start' %> mb-2">
+          <div class="<%= String(msg.senderId) === String(senderId) ? 'chat-bubble-right' : 'chat-bubble-left' %> shadow-sm px-3 py-2 rounded-3">
+            <%= msg.content %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="card-footer bg-light border-0 px-4 py-3">
+      <form id="messageForm" class="d-flex align-items-center gap-2">
+        <input type="text" id="msgInput" class="form-control rounded-pill border-0 shadow-sm" placeholder="Type your message..." required autocomplete="off">
+        <button type="submit" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+          <i class="bi bi-send-fill fs-5"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io({ query: { userId: "<%= senderId %>" } });
+
+  const chatBox = document.getElementById("chatBox");
+  const msgInput = document.getElementById("msgInput");
+
+  document.getElementById("messageForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const content = msgInput.value.trim();
+    if (!content) return;
+
+    socket.emit("privateMessage", {
+      senderId: "<%= senderId %>",
+      receiverId: "<%= receiver._id %>",
+      content
+    });
+
+    const div = document.createElement("div");
+    div.className = "d-flex justify-content-end mb-2";
+    div.innerHTML = `<div class="chat-bubble-right shadow-sm px-3 py-2 rounded-3">${content}</div>`;
+    chatBox.appendChild(div);
+
+    msgInput.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  socket.on("newMessage", ({ senderId, content }) => {
+    const div = document.createElement("div");
+    div.className = "d-flex justify-content-start mb-2";
+    div.innerHTML = `<div class="chat-bubble-left shadow-sm px-3 py-2 rounded-3">${content}</div>`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  window.onload = () => chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+
+<style>
+  .chat-card {
+    max-width: 700px;
+    margin: auto;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.25rem !important;
+  }
+
+  .chat-body {
+    flex-grow: 1;
+    background-color: #f0f2f5;
+    padding: 1rem 0;
+  }
+
+  .chat-bubble-left {
+    max-width: 75%;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 0.8rem 0.8rem 0.8rem 0.2rem;
+  }
+
+  .chat-bubble-right {
+    max-width: 75%;
+    background: linear-gradient(135deg, #17a865, #17a865);
+    color: white;
+    border-radius: 0.8rem 0.8rem 0.2rem 0.8rem;
+  }
+
+  #msgInput {
+    padding: 0.7rem 1rem;
+  }
+
+  #msgInput::placeholder {
+    color: #999;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+</style>

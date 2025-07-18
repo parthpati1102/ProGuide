@@ -4,9 +4,12 @@ const multer  = require('multer');
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
 const { userSchema } = require("../schema.js");
+const User = require("../models/user");
 const wrapAsync = require("../utils/wrapAsync.js");
 const passport = require("passport");
 const { renderRegister, register, login, logout, search , renderForgotPassword, handleForgotPassword, renderResetPassword, handleResetPassword , renderLoginOtp, renderVerifyOtp, sendOtp, verifyOtp} = require("../controllers/userController");
+const chatController = require("../controllers/chatController");
+const { isLoggedIn } = require("../middlewares.js"); // your auth middleware
 
 const validateUser = (req, res , next) => {
     let {error} =  userSchema.validate(req.body);
@@ -33,5 +36,6 @@ router.post("/forgot-password", wrapAsync(handleForgotPassword));
 router.get("/reset-password/:token", wrapAsync(renderResetPassword));
 router.post("/reset-password/:token", wrapAsync(handleResetPassword));
 router.get("/search", wrapAsync(search));
+router.get("/chat/:userId", isLoggedIn, chatController.renderChatPage);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const Job = require("../models/jobPost");
 const Application = require("../models/acceptApplication");
 const sendEmail = require("../sendEmail.js");
+const Message = require("../models/message.js"); 
 
 // Show new job form
 exports.newJobForm = (req, res) => {
@@ -41,11 +42,37 @@ exports.createJob = async (req, res) => {
 exports.myJobs = async (req, res) => {
   try {
     const employerId = req.user._id;
+
+    // 🧾 Fetch employer's posted jobs
     const jobs = await Job.find({ employerId });
-    return res.render("employer/myJobs.ejs", { jobs });
+
+    // 📥 Fetch received messages (from freelancers to employer)
+    const receivedMessages = await Message.find({
+      receiverId: employerId,
+    })
+      .populate("senderId", "name email") // assuming freelancer's user info
+      .sort({ createdAt: -1 });
+
+    // ✅ Extract unique senders (freelancers who messaged)
+    const uniqueSendersMap = new Map();
+    for (const msg of receivedMessages) {
+      const senderIdStr = msg.senderId._id.toString();
+      if (!uniqueSendersMap.has(senderIdStr)) {
+        uniqueSendersMap.set(senderIdStr, msg.senderId);
+      }
+    }
+    const uniqueSenders = Array.from(uniqueSendersMap.values());
+
+    // 🖼 Render dashboard with jobs and message info
+    return res.render("employer/myJobs.ejs", {
+      jobs,
+      receivedMessages,
+      uniqueSenders,
+    });
+
   } catch (err) {
     console.error("Error in myJobs:", err);
-    req.flash("error", "Unable to fetch your jobs.");
+    req.flash("error", "Unable to load employer dashboard.");
     return res.redirect("/index");
   }
 };

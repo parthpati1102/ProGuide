@@ -1,5 +1,6 @@
 const Mentor = require("../models/mentor");
 const SessionScheduling = require("../models/session");
+const Message = require('../models/message');
 
 
 
@@ -21,6 +22,8 @@ exports.showProfile = async (req, res) => {
   let mentor;
   let sessionRequests = [];
   let upcomingSessions = [];
+  let receivedMessages = [];
+  let uniqueSenders = [];
 
   if (mentorId) {
     mentor = await Mentor.findById(mentorId).populate("userId", "name email profilePicture");
@@ -46,22 +49,42 @@ exports.showProfile = async (req, res) => {
       request.formattedDate = dateParts.join(' ');
     });
 
-    // 📅 Upcoming confirmed sessions (with meet links)
+    // 📅 Upcoming confirmed sessions
     upcomingSessions = await SessionScheduling.find({
       mentorId: mentor._id,
       status: "Confirmed",
-      date: { $gte: new Date() }, // upcoming only
+      date: { $gte: new Date() },
     })
       .populate("menteeId", "name email")
-      .sort({ date: 1 }); // soonest first
+      .sort({ date: 1 });
+
+    // 📥 Received messages
+    receivedMessages = await Message.find({
+      receiverId: req.user._id,
+    })
+      .populate("senderId", "name")
+      .sort({ createdAt: -1 });
+
+    // ✅ Extract unique senders
+    const uniqueSendersMap = new Map();
+    for (const msg of receivedMessages) {
+      const senderIdStr = msg.senderId._id.toString();
+      if (!uniqueSendersMap.has(senderIdStr)) {
+        uniqueSendersMap.set(senderIdStr, msg.senderId);
+      }
+    }
+    uniqueSenders = Array.from(uniqueSendersMap.values());
   }
 
   res.render("mentor/showProfile.ejs", {
     mentor,
     sessionRequests,
-    upcomingSessions, // ✅ pass to view
+    upcomingSessions,
+    receivedMessages,
+    uniqueSenders,
   });
 };
+
 
 
 exports.editProfileForm = async (req, res) => {

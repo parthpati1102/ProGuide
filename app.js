@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const methodOverRide = require("method-override");
 const ejsMate = require("ejs-mate");
 const path = require("path");
+const http = require('http');
+const socketIo = require('socket.io');
 const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
@@ -21,16 +23,19 @@ const ExpressError = require("./utils/ExpressError.js");
 const User = require("./models/user");
 const Mentor = require("./models/mentor");
 const Application = require("./models/acceptApplication");
+const Message = require('./models/message.js');
 
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 const PORT = 8381;
 const MONGO_URL = process.env.MONGO_URL;
 const secretCode = process.env.SECRET;
 
-app.listen(PORT , () => {
-    console.log(`Server is listening to port number ${PORT}`);
-})
+server.listen(PORT, () => {
+  console.log(`Server is listening to port number ${PORT}`);
+});
 
 const store = MongoStore.create({
     mongoUrl : MONGO_URL,
@@ -65,7 +70,8 @@ main()
 .catch((err) => { console.log(err); });
 async function main() { await mongoose.connect(MONGO_URL); }
 
-app.use(session(sessionOptions));
+const sessionMiddleware = session(sessionOptions);
+app.use(sessionMiddleware);
 app.use(flash());
 
 app.use(passport.initialize());
@@ -109,6 +115,59 @@ app.use(async (req, res, next) => {
   }
   next();
 });
+
+// Socket.io middleware for sessions
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
+
+const connectedUsers = new Map();
+
+io.on('connection', (socket) => {
+  const userId = socket.handshake.query.userId;
+
+  if (userId) {
+    connectedUsers.set(userId, socket);
+    // console.log(`User connected: ${userId}`);
+  }
+
+  // Handle private messages
+  socket.on('privateMessage', async ({ senderId, receiverId, content }) => {
+    if (!senderId || !receiverId || !content) {
+      console.error("Invalid message payload");
+      return;
+    }
+
+    try {
+      const message = new Message({ senderId, receiverId, content });
+      await message.save(); // Store message in MongoDB
+
+      // Emit message to receiver if they are connected
+      const receiverSocket = connectedUsers.get(receiverId);
+      if (receiverSocket) {
+        receiverSocket.emit('newMessage', {
+          senderId,
+          content,
+          timestamp: message.timestamp, // optional
+        });
+      }
+    } catch (err) {
+      console.error("Error saving or sending message:", err);
+    }
+  });
+
+  // Handle user disconnect
+  socket.on('disconnect', () => {
+    for (const [uid, s] of connectedUsers.entries()) {
+      if (s === socket) {
+        connectedUsers.delete(uid);
+        // console.log(`User disconnected: ${uid}`);
+        break;
+      }
+    }
+  });
+});
+
 
 // ROUTES
 const userRoutes = require("./routes/user");
